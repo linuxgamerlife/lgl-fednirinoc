@@ -15,13 +15,15 @@ A post-install bash script that sets up [niri](https://github.com/niri-wm/niri) 
 
 ## Concept
 
-Fedora minimal (TTY) → run `install.sh` → type `niri-session` → niri + Noctalia
+Fedora Everything (TTY) → run `install.sh` → type `niri-session` → niri + Noctalia
 
 No display manager. No greeter. Lightweight by design.
 
 ## Install
 
-From a fresh Fedora minimal TTY login:
+Download the [Fedora Everything ISO](https://fedoraproject.org/misc/#everything) and install it. During setup, **do not select any software options** — leave the software selection empty so the system boots to a TTY with no desktop environment.
+
+From a fresh Fedora Everything TTY login:
 
 ```bash
 sudo dnf install -y git
