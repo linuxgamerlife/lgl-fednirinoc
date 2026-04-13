@@ -345,7 +345,7 @@ configure_pipewire() {
 }
 
 # ─────────────────────────────────────────────
-# Phase 8: Display config banner
+# Phase 9: Post-install banner + reboot prompt
 # ─────────────────────────────────────────────
 
 display_banner() {
@@ -379,28 +379,40 @@ display_banner() {
     echo ""
     echo "================================================================"
     echo ""
+    echo "  !! MAKE A NOTE OF THE ABOVE BEFORE REBOOTING !!"
+    echo ""
+    read -rp "  Reboot now? [y/N] " yn_reboot
+    if [[ "${yn_reboot,,}" == "y" ]]; then
+        sudo reboot
+    else
+        echo ""
+        echo "  Reboot manually when ready: sudo reboot"
+        echo ""
+    fi
 }
 
 # ─────────────────────────────────────────────
-# Phase 9: Optional LGL tools
+# Phase 8: Optional LGL tools
 # ─────────────────────────────────────────────
 
 offer_lgl_tools() {
     echo ""
-    echo "  ┌─────────────────────────────────────────────────────────────┐"
-    echo "  │          Linux Gamer Life — Optional Tools                  │"
-    echo "  │                                                             │"
-    echo "  │  Community tools from LGL, built for Fedora gamers.        │"
-    echo "  │  Both are optional — skip either with 'n'.                 │"
-    echo "  └─────────────────────────────────────────────────────────────┘"
+    echo "  ================================================================"
+    echo "          Linux Gamer Life -- Optional Tools"
+    echo "          Community tools from LGL, built for Fedora gamers."
+    echo "          Both are optional -- skip either with 'n'."
+    echo "  ================================================================"
     echo ""
 
     # ── LGL System Loadout ──────────────────────────────────────────────
-    echo "  LGL System Loadout"
+    echo "  ----------------------------------------------------------------"
+    echo "          LGL System Loadout"
+    echo "  ----------------------------------------------------------------"
     echo "  A graphical setup wizard for Fedora. Browse and install curated"
-    echo "  packages across gaming, multimedia, content creation, and dev —"
+    echo "  packages across gaming, multimedia, content creation, and dev --"
     echo "  nothing installs without your confirmation."
     echo "  https://github.com/linuxgamerlife/lgl-system-loadout"
+    echo "  ----------------------------------------------------------------"
     echo ""
     read -rp "  Install LGL System Loadout? [y/N] " yn_loadout
     if [[ "${yn_loadout,,}" == "y" ]]; then
@@ -415,11 +427,14 @@ offer_lgl_tools() {
     echo ""
 
     # ── LGL SCX Scheduler Manager ────────────────────────────────────────
-    echo "  LGL SCX Scheduler Manager"
+    echo "  ----------------------------------------------------------------"
+    echo "          LGL SCX Scheduler Manager"
+    echo "  ----------------------------------------------------------------"
     echo "  A Qt6 GUI for managing sched-ext BPF CPU schedulers. Start, stop,"
     echo "  or switch schedulers with custom flags. Includes status monitor,"
     echo "  command log, and system tray integration."
     echo "  https://github.com/linuxgamerlife/lgl-scxctl-manager"
+    echo "  ----------------------------------------------------------------"
     echo ""
     read -rp "  Install LGL SCX Scheduler Manager? [y/N] " yn_scx
     if [[ "${yn_scx,,}" == "y" ]]; then
