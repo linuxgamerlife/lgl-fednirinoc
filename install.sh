@@ -1,5 +1,5 @@
 #!/bin/bash
-# fedirinoc v0.0.1
+# fedirinoc v0.0.2
 # Post-install script: Fedora minimal TTY -> niri + Noctalia
 # Run as your regular user with sudo access.
 
@@ -132,8 +132,8 @@ install_packages() {
         xdg-desktop-portal-gnome
         gnome-keyring
 
-        # Session essentials (polkit-gnome removed in F41+, mate-polkit is GTK equivalent)
-        mate-polkit
+        # Session essentials (polkit-gnome removed in F41+, lxqt-policykit is modern lightweight replacement)
+        lxqt-policykit
         pipewire
         pipewire-pulse
         wireplumber
@@ -193,31 +193,22 @@ configure_niri() {
     cat >> "${NIRI_CONFIG}" << 'EOF'
 
 // ─────────────────────────────────────────────
-// fedirinoc — appended by install.sh v0.0.1
+// fedirinoc — appended by install.sh v0.0.2
 // ─────────────────────────────────────────────
 
 // Noctalia shell
 spawn-at-startup "qs" "-c" "noctalia-shell"
 
-// Polkit agent (mate-polkit, polkit-gnome removed in F41+)
-spawn-at-startup "/usr/libexec/polkit-mate-authentication-agent-1"
+// Xwayland (required for X11/game compatibility)
+spawn-at-startup "xwayland-satellite"
 
-// Noctalia required: rounded corners
-window-rule {
-    geometry-corner-radius 20
-    clip-to-geometry true
-}
+// Polkit agent (polkit-gnome removed in F41+, using lxqt-policykit)
+spawn-at-startup "/usr/bin/lxqt-policykit-agent"
 
-// Noctalia required: xdg-activation fix
-debug {
-    honor-xdg-activation-with-invalid-serial
-}
-
-// Noctalia wallpaper integration (blurred overview)
-layer-rule {
-    match namespace="^noctalia-overview*"
-    place-within-backdrop true
-}
+// Uncomment if apps fail to focus when launched via Noctalia
+// debug {
+//     honor-xdg-activation-with-invalid-serial
+// }
 
 // OUTPUT CONFIGURATION
 // After first login run: niri msg outputs
@@ -399,7 +390,7 @@ configure_pipewire() {
 display_banner() {
     echo ""
     echo "╔══════════════════════════════════════════════════════════════╗"
-    echo "║         fedirinoc v0.0.1 — Install Complete                  ║"
+    echo "║         fedirinoc v0.0.2 — Install Complete                  ║"
     echo "╠══════════════════════════════════════════════════════════════╣"
     echo "║                                                              ║"
     echo "║  MANUAL STEP REQUIRED: Display Configuration                 ║"
@@ -418,14 +409,15 @@ display_banner() {
     echo "║      transform \"normal\"                                      ║"
     echo "║    }                                                         ║"
     echo "║                                                              ║"
-    echo "║  Then: niri msg action quit   (greetd restarts session)      ║"
+    echo "║  Then restart niri: niri msg action quit                      ║"
+    echo "║                                                              ║"
+    echo "║  TO START:                                                   ║"
+    echo "║    Log in at TTY, then type: niri-session                    ║"
     echo "║                                                              ║"
     echo "║  KNOWN ISSUES:                                               ║"
     echo "║  - Screencasting: restart portals if broken (see docs)       ║"
     echo "║  - Suspend may cause red screen — known niri+Fedora bug      ║"
     echo "║  - Do NOT pkill niri — use: niri msg action quit             ║"
-    echo "║                                                              ║"
-    echo "║  Reboot now to start greetd.                                 ║"
     echo "╚══════════════════════════════════════════════════════════════╝"
     echo ""
 }
@@ -436,7 +428,7 @@ display_banner() {
 
 main() {
     echo ""
-    echo "  fedirinoc v0.0.1 — Fedora minimal -> niri + Noctalia"
+    echo "  fedirinoc v0.0.2 — Fedora minimal -> niri + Noctalia"
     echo "  ────────────────────────────────────────────────────"
     echo ""
 
