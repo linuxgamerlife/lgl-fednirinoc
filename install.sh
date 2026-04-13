@@ -148,7 +148,7 @@ install_packages() {
         PACKAGES+=(adw-gtk3-theme)
     fi
 
-    sudo dnf install -y "${PACKAGES[@]}"
+    sudo dnf install -y --exclude=power-profiles-daemon "${PACKAGES[@]}"
     success "Packages installed."
 }
 
