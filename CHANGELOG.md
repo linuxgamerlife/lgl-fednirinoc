@@ -23,6 +23,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 - Portal config written to wrong path (`~/.config/niri/niri-portals.conf`) — xdg-desktop-portal never read it as no `niri.portal` file exists in the system portals directory. Now writes to `~/.config/xdg-desktop-portal/niri-portals.conf` which is in the actual search path
 - Added `org.freedesktop.impl.portal.FileChooser=gtk` to portal config — without it gnome portal intercepts FileChooser calls and fails silently on niri (requires GNOME Shell)
+- Added `gnome-menus` to package list — provides `applications.menu` required by KDE apps (Dolphin) to discover installed applications; without it the "Choose Application" dialog is empty
 
 ### Changed
 - Replaced `qt6ct` (then briefly `qadwaitadecorations-qt6`) back to `qt6ct` — confirmed correct for F43; `adwaita-qt`/`adwaita-qt6` dropped F39+, `qadwaitadecorations-qt6` not in F43 repos

@@ -98,6 +98,7 @@ The install script configures the GTK portal as the FileChooser handler. If the 
 | Suspend → red screen | Known niri + Fedora GPU bug | Avoid suspend |
 | Display output config | Requires running niri | Manual step post-install |
 | `power-profiles-daemon` conflicts with `tuned-ppd` | `tuned` (and `tuned-ppd`) ship by default on Fedora — `power-profiles-daemon` always conflicts | Excluded from install |
+| KDE "Choose Application" dialog empty | `applications.menu` missing — KDE app discovery requires `gnome-menus` | Included in install |
 
 ## Docs
 

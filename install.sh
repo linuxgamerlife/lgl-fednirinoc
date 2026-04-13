@@ -132,6 +132,9 @@ install_packages() {
         pipewire-pulse
         wireplumber
 
+        # App menu discovery (required by KDE apps like Dolphin to find installed apps)
+        gnome-menus
+
         # Qt theming (qt6ct — config tool for Qt6 apps; adwaita-qt/adwaita-qt6 dropped F39+)
         qt6ct
         # qt5ct  # uncomment if you have Qt5 apps that don't honour the Qt6 theme
