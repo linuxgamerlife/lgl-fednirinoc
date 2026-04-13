@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Changed
+- Replaced `qt6ct` with `adwaita-qt` + `adwaita-qt6` for Qt theming — native Adwaita style for Qt5 and Qt6 apps without a config tool
+- Niri env var changed from `QT_QPA_PLATFORMTHEME "qt6ct"` to `QT_STYLE_OVERRIDE "adwaita"`
+
 ### Planned
 - Live hardware testing
 - GTK3 graphical installer app (future)
