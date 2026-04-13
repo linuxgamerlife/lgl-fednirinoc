@@ -120,12 +120,6 @@ install_packages() {
         python3
         git
 
-        # Greeter
-        greetd
-        greetd-selinux
-        tuigreet
-        policycoreutils-python-utils
-
         # Portals
         xdg-desktop-portal
         xdg-desktop-portal-gtk
@@ -137,6 +131,9 @@ install_packages() {
         pipewire
         pipewire-pulse
         wireplumber
+
+        # Qt theming (styles Qt6 apps outside of KDE)
+        qt6ct
 
         # Optional but integrated by Noctalia
         cliphist
@@ -192,9 +189,14 @@ configure_niri() {
 
     cat >> "${NIRI_CONFIG}" << 'EOF'
 
-// ─────────────────────────────────────────────
-// fedirinoc — appended by install.sh v0.0.2
-// ─────────────────────────────────────────────
+// ---------------------------------------------
+// fedirinoc -- appended by install.sh v0.0.2
+// ---------------------------------------------
+
+// Qt6 theming
+environment {
+    QT_QPA_PLATFORMTHEME "qt6ct"
+}
 
 // Noctalia shell
 spawn-at-startup "qs" "-c" "noctalia-shell"
@@ -203,7 +205,7 @@ spawn-at-startup "qs" "-c" "noctalia-shell"
 spawn-at-startup "xwayland-satellite"
 
 // Polkit agent (polkit-gnome removed in F41+, using lxqt-policykit)
-spawn-at-startup "/usr/bin/lxqt-policykit-agent"
+spawn-at-startup "/usr/libexec/lxqt-policykit-agent"
 
 // Uncomment if apps fail to focus when launched via Noctalia
 // debug {
@@ -213,7 +215,7 @@ spawn-at-startup "/usr/bin/lxqt-policykit-agent"
 // OUTPUT CONFIGURATION
 // After first login run: niri msg outputs
 // Note your output name and mode, then uncomment and edit below, then:
-//   niri msg action quit   (greetd will restart the session)
+//   niri msg action quit
 //
 // output "eDP-1" {
 //     mode "1920x1080@60.000"
@@ -283,71 +285,7 @@ EOF
 }
 
 # ─────────────────────────────────────────────
-# Phase 6: Greeter
-# ─────────────────────────────────────────────
-
-configure_greeter() {
-    info "Configuring greetd + tuigreet..."
-
-    # Write greetd config
-    sudo tee /etc/greetd/config.toml > /dev/null << 'EOF'
-[terminal]
-vt = 1
-
-[default_session]
-command = "tuigreet --time --remember --sessions /usr/share/wayland-sessions --asterisks"
-user = "greeter"
-EOF
-
-    # Permissions
-    sudo chmod -R go+r /etc/greetd
-    success "greetd config written."
-
-    # SELinux policy
-    info "Applying greetd SELinux policy..."
-    sudo semanage fcontext -a -ff -t xdm_exec_t /usr/bin/greetd 2>/dev/null || \
-        sudo semanage fcontext -m -t xdm_exec_t /usr/bin/greetd 2>/dev/null || \
-        warn "semanage fcontext failed — SELinux may block greetd. Check audit.log."
-    sudo restorecon /usr/bin/greetd
-    success "SELinux context applied."
-
-    # niri.desktop session file
-    WAYLAND_SESSIONS="/usr/share/wayland-sessions"
-    NIRI_DESKTOP="${WAYLAND_SESSIONS}/niri.desktop"
-    sudo mkdir -p "${WAYLAND_SESSIONS}"
-
-    if [[ ! -f "${NIRI_DESKTOP}" ]]; then
-        warn "niri.desktop not found — creating fallback."
-        sudo tee "${NIRI_DESKTOP}" > /dev/null << 'EOF'
-[Desktop Entry]
-Name=Niri
-Comment=A scrollable-tiling Wayland compositor
-Exec=niri-session
-Type=Application
-EOF
-        success "Created ${NIRI_DESKTOP}"
-    else
-        success "niri.desktop already present."
-    fi
-
-    # Enable greetd + force correct systemd target wiring
-    sudo systemctl enable greetd
-    sudo ln -sf /usr/lib/systemd/system/greetd.service \
-        /etc/systemd/system/multi-user.target.wants/greetd.service
-    sudo systemctl daemon-reload
-    success "greetd enabled and wired to multi-user.target."
-
-    # Disable other display managers if present
-    for DM in gdm sddm lightdm; do
-        if systemctl is-enabled "${DM}" &>/dev/null; then
-            sudo systemctl disable "${DM}"
-            warn "Disabled existing display manager: ${DM}"
-        fi
-    done
-}
-
-# ─────────────────────────────────────────────
-# Phase 7: PipeWire user session
+# Phase 6: PipeWire user session
 # ─────────────────────────────────────────────
 
 configure_pipewire() {
@@ -389,36 +327,34 @@ configure_pipewire() {
 
 display_banner() {
     echo ""
-    echo "╔══════════════════════════════════════════════════════════════╗"
-    echo "║         fedirinoc v0.0.2 — Install Complete                  ║"
-    echo "╠══════════════════════════════════════════════════════════════╣"
-    echo "║                                                              ║"
-    echo "║  MANUAL STEP REQUIRED: Display Configuration                 ║"
-    echo "║                                                              ║"
-    echo "║  After first login, open a terminal and run:                 ║"
-    echo "║    niri msg outputs                                          ║"
-    echo "║                                                              ║"
-    echo "║  Note your output name (e.g. eDP-1) and mode                ║"
-    echo "║  (e.g. 1920x1080@60.000), then edit:                        ║"
-    echo "║    ~/.config/niri/config.kdl                                 ║"
-    echo "║                                                              ║"
-    echo "║  Find the OUTPUT CONFIGURATION section and uncomment:        ║"
-    echo "║    output \"YOUR-OUTPUT-NAME\" {                               ║"
-    echo "║      mode \"WIDTHxHEIGHT@REFRESH\"                            ║"
-    echo "║      scale 1.0                                               ║"
-    echo "║      transform \"normal\"                                      ║"
-    echo "║    }                                                         ║"
-    echo "║                                                              ║"
-    echo "║  Then restart niri: niri msg action quit                      ║"
-    echo "║                                                              ║"
-    echo "║  TO START:                                                   ║"
-    echo "║    Log in at TTY, then type: niri-session                    ║"
-    echo "║                                                              ║"
-    echo "║  KNOWN ISSUES:                                               ║"
-    echo "║  - Screencasting: restart portals if broken (see docs)       ║"
-    echo "║  - Suspend may cause red screen — known niri+Fedora bug      ║"
-    echo "║  - Do NOT pkill niri — use: niri msg action quit             ║"
-    echo "╚══════════════════════════════════════════════════════════════╝"
+    echo "================================================================"
+    echo "  fedirinoc v0.0.2 -- Install Complete"
+    echo "================================================================"
+    echo ""
+    echo "  TO START:"
+    echo "    Log in at TTY, then type: niri-session"
+    echo ""
+    echo "  DISPLAY CONFIGURATION (after first login, inside niri):"
+    echo "    1. Run: niri msg outputs"
+    echo "    2. Note your output name (e.g. eDP-1) and mode"
+    echo "       (e.g. 1920x1080@60.000)"
+    echo "    3. Edit: ~/.config/niri/config.kdl"
+    echo "    4. Find the OUTPUT CONFIGURATION section and uncomment:"
+    echo ""
+    echo "         output \"YOUR-OUTPUT-NAME\" {"
+    echo "             mode \"WIDTHxHEIGHT@REFRESH\""
+    echo "             scale 1.0"
+    echo "             transform \"normal\""
+    echo "         }"
+    echo ""
+    echo "    5. Restart niri: niri msg action quit"
+    echo ""
+    echo "  KNOWN ISSUES:"
+    echo "    - Screencasting: restart portals if broken (see docs)"
+    echo "    - Suspend may cause red screen -- known niri+Fedora bug"
+    echo "    - Do NOT pkill niri -- use: niri msg action quit"
+    echo ""
+    echo "================================================================"
     echo ""
 }
 
@@ -428,8 +364,8 @@ display_banner() {
 
 main() {
     echo ""
-    echo "  fedirinoc v0.0.2 — Fedora minimal -> niri + Noctalia"
-    echo "  ────────────────────────────────────────────────────"
+    echo "  fedirinoc v0.0.2 -- Fedora minimal -> niri + Noctalia"
+    echo "  ----------------------------------------------------"
     echo ""
 
     preflight
@@ -438,7 +374,6 @@ main() {
     configure_niri
     configure_portals
     configure_gtk_theme
-    configure_greeter
     configure_pipewire
     display_banner
 }
