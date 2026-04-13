@@ -1,5 +1,5 @@
 #!/bin/bash
-# fednirinoc v0.0.2
+# fednirinoc v0.1.0
 # Post-install script: Fedora minimal TTY -> niri + Noctalia
 # Run as your regular user with sudo access.
 
@@ -191,7 +191,7 @@ configure_niri() {
     cat >> "${NIRI_CONFIG}" << 'EOF'
 
 // ---------------------------------------------
-// fednirinoc -- appended by install.sh v0.0.2
+// fednirinoc -- appended by install.sh v0.1.0
 // ---------------------------------------------
 
 // Qt theming — qt6ct reads ~/.config/qt6ct/qt6ct.conf (configure via: qt6ct)
@@ -351,7 +351,7 @@ configure_pipewire() {
 display_banner() {
     echo ""
     echo "================================================================"
-    echo "  fednirinoc v0.0.2 -- Install Complete"
+    echo "  fednirinoc v0.1.0 -- Install Complete"
     echo "================================================================"
     echo ""
     echo "  TO START:"
@@ -382,12 +382,63 @@ display_banner() {
 }
 
 # ─────────────────────────────────────────────
+# Phase 9: Optional LGL tools
+# ─────────────────────────────────────────────
+
+offer_lgl_tools() {
+    echo ""
+    echo "  ┌─────────────────────────────────────────────────────────────┐"
+    echo "  │          Linux Gamer Life — Optional Tools                  │"
+    echo "  │                                                             │"
+    echo "  │  Community tools from LGL, built for Fedora gamers.        │"
+    echo "  │  Both are optional — skip either with 'n'.                 │"
+    echo "  └─────────────────────────────────────────────────────────────┘"
+    echo ""
+
+    # ── LGL System Loadout ──────────────────────────────────────────────
+    echo "  LGL System Loadout"
+    echo "  A graphical setup wizard for Fedora. Browse and install curated"
+    echo "  packages across gaming, multimedia, content creation, and dev —"
+    echo "  nothing installs without your confirmation."
+    echo "  https://github.com/linuxgamerlife/lgl-system-loadout"
+    echo ""
+    read -rp "  Install LGL System Loadout? [y/N] " yn_loadout
+    if [[ "${yn_loadout,,}" == "y" ]]; then
+        info "Installing LGL System Loadout..."
+        sudo dnf copr enable -y linuxgamerlife/lgl-system-loadout
+        sudo dnf install -y lgl-system-loadout
+        success "LGL System Loadout installed."
+    else
+        info "Skipping LGL System Loadout."
+    fi
+
+    echo ""
+
+    # ── LGL SCX Scheduler Manager ────────────────────────────────────────
+    echo "  LGL SCX Scheduler Manager"
+    echo "  A Qt6 GUI for managing sched-ext BPF CPU schedulers. Start, stop,"
+    echo "  or switch schedulers with custom flags. Includes status monitor,"
+    echo "  command log, and system tray integration."
+    echo "  https://github.com/linuxgamerlife/lgl-scxctl-manager"
+    echo ""
+    read -rp "  Install LGL SCX Scheduler Manager? [y/N] " yn_scx
+    if [[ "${yn_scx,,}" == "y" ]]; then
+        info "Installing LGL SCX Scheduler Manager..."
+        sudo dnf copr enable -y linuxgamerlife/lgl-scxctl-manager
+        sudo dnf install -y lgl-scxctl-manager
+        success "LGL SCX Scheduler Manager installed."
+    else
+        info "Skipping LGL SCX Scheduler Manager."
+    fi
+}
+
+# ─────────────────────────────────────────────
 # Main
 # ─────────────────────────────────────────────
 
 main() {
     echo ""
-    echo "  fednirinoc v0.0.2 -- Fedora minimal -> niri + Noctalia"
+    echo "  fednirinoc v0.1.0 -- Fedora minimal -> niri + Noctalia"
     echo "  ----------------------------------------------------"
     echo ""
 
@@ -399,6 +450,7 @@ main() {
     configure_system_env
     configure_gtk_theme
     configure_pipewire
+    offer_lgl_tools
     display_banner
 }
 

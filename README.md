@@ -5,7 +5,11 @@ A post-install bash script that sets up [niri](https://github.com/niri-wm/niri) 
 ---
 
 > [!WARNING]
-> **Work in progress. Not tested on real hardware.**
+> **Work in progress. Tested in VM only.**
+> 
+> **VM requirements:** GPU acceleration must be enabled with OpenGL support (e.g. VirtIO GPU + 3D acceleration in QEMU/KVM). Without this niri will not start.
+>
+> **To start after install:** log in at the TTY, then run `niri-session`. There is no display manager.
 
 ---
 
@@ -24,7 +28,8 @@ No display manager. No greeter. Lightweight by design.
 5. Sets Qt theme env var in `/etc/environment` (system-wide, covers polkit dialogs)
 6. Registers a one-shot autostart to apply dark mode GTK theme on first login
 7. Enables PipeWire user session
-8. Prints post-install instructions
+8. Optionally installs LGL System Loadout and/or LGL SCX Scheduler Manager
+9. Prints post-install instructions
 
 ## What Noctalia handles
 
@@ -57,6 +62,17 @@ niri msg outputs
 # Note your output name and mode
 # Edit ~/.config/niri/config.kdl — uncomment the OUTPUT CONFIGURATION section
 ```
+
+## Optional LGL Tools
+
+The script will offer to install these at the end:
+
+| Tool | Description |
+|---|---|
+| [LGL System Loadout](https://github.com/linuxgamerlife/lgl-system-loadout) | Graphical setup wizard — browse and install curated packages across gaming, multimedia, content creation, and dev |
+| [LGL SCX Scheduler Manager](https://github.com/linuxgamerlife/lgl-scxctl-manager) | Qt6 GUI for managing sched-ext BPF CPU schedulers with status monitoring and system tray |
+
+Both default to skip — press Enter to pass.
 
 ## Known Issues
 

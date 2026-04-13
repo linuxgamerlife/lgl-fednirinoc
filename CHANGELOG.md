@@ -8,17 +8,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Planned
+- Live hardware testing
+- GTK3 graphical installer app (future)
+
+---
+
+## [0.1.0] - 2026-04-13
+
 ### Added
 - `configure_system_env` phase: writes `QT_QPA_PLATFORMTHEME=qt6ct` to `/etc/environment` — ensures polkit dialogs and other system-spawned Qt processes inherit Qt theming (niri config.kdl env block alone is insufficient)
+- `offer_lgl_tools` phase: optional post-install prompts for LGL System Loadout (graphical Fedora setup wizard) and LGL SCX Scheduler Manager (Qt6 GUI for sched-ext BPF schedulers) — both default to skip
 
 ### Changed
 - Replaced `qt6ct` (then briefly `qadwaitadecorations-qt6`) back to `qt6ct` — confirmed correct for F43; `adwaita-qt`/`adwaita-qt6` dropped F39+, `qadwaitadecorations-qt6` not in F43 repos
 - Niri env var: `QT_QPA_PLATFORMTHEME "qt6ct"` — qt6ct configured post-install via GUI; Qt5 per-app workaround documented (`QT_QPA_PLATFORMTHEME=qt5ct <app>`)
 - Dark mode: autostart now sets both `gtk-theme adw-gtk3-dark` and `color-scheme prefer-dark` via gsettings on first login (covers GTK3, GTK4, and portal-aware apps)
-
-### Planned
-- Live hardware testing
-- GTK3 graphical installer app (future)
 
 ---
 
@@ -58,5 +63,6 @@ Initial release. Research-based bash script, partially tested in VM.
 ### Not included (Noctalia handles)
 - Wallpaper, notifications, lock screen, night light, status bar, app launcher
 
+[0.1.0]: https://github.com/linuxgamerlife/lgl-fednirinoc/compare/v0.0.2...v0.1.0
 [0.0.2]: https://github.com/linuxgamerlife/lgl-fednirinoc/compare/v0.0.1...v0.0.2
 [0.0.1]: https://github.com/linuxgamerlife/lgl-fednirinoc/releases/tag/v0.0.1
