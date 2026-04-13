@@ -1,5 +1,5 @@
 #!/bin/bash
-# fedirinoc v0.0.2
+# fednirinoc v0.0.2
 # Post-install script: Fedora minimal TTY -> niri + Noctalia
 # Run as your regular user with sudo access.
 
@@ -182,16 +182,16 @@ configure_niri() {
         info "No active waybar spawn found."
     fi
 
-    # Append fedirinoc block (idempotent — skip if already present)
-    if grep -q "# fedirinoc" "${NIRI_CONFIG}"; then
-        info "fedirinoc config block already present — skipping append."
+    # Append fednirinoc block (idempotent — skip if already present)
+    if grep -q "# fednirinoc" "${NIRI_CONFIG}"; then
+        info "fednirinoc config block already present — skipping append."
         return
     fi
 
     cat >> "${NIRI_CONFIG}" << 'EOF'
 
 // ---------------------------------------------
-// fedirinoc -- appended by install.sh v0.0.2
+// fednirinoc -- appended by install.sh v0.0.2
 // ---------------------------------------------
 
 // Qt theming (Adwaita style for Qt5+Qt6)
@@ -224,7 +224,7 @@ spawn-at-startup "/usr/libexec/lxqt-policykit-agent"
 //     transform "normal"
 // }
 
-// # fedirinoc
+// # fednirinoc
 EOF
 
     success "Appended niri config block."
@@ -270,14 +270,14 @@ configure_gtk_theme() {
     # gsettings needs a dbus session — write an autostart script instead
     # that runs once on first login, then removes itself
     AUTOSTART_DIR="${SCRIPT_HOME}/.config/autostart"
-    AUTOSTART_FILE="${AUTOSTART_DIR}/fedirinoc-gtk-theme.desktop"
+    AUTOSTART_FILE="${AUTOSTART_DIR}/fednirinoc-gtk-theme.desktop"
 
     mkdir -p "${AUTOSTART_DIR}"
 
     cat > "${AUTOSTART_FILE}" << EOF
 [Desktop Entry]
 Type=Application
-Name=fedirinoc GTK theme setup
+Name=fednirinoc GTK theme setup
 Exec=bash -c 'gsettings set org.gnome.desktop.interface gtk-theme adw-gtk3 && rm -f ${AUTOSTART_FILE}'
 X-GNOME-Autostart-enabled=true
 EOF
@@ -329,7 +329,7 @@ configure_pipewire() {
 display_banner() {
     echo ""
     echo "================================================================"
-    echo "  fedirinoc v0.0.2 -- Install Complete"
+    echo "  fednirinoc v0.0.2 -- Install Complete"
     echo "================================================================"
     echo ""
     echo "  TO START:"
@@ -365,7 +365,7 @@ display_banner() {
 
 main() {
     echo ""
-    echo "  fedirinoc v0.0.2 -- Fedora minimal -> niri + Noctalia"
+    echo "  fednirinoc v0.0.2 -- Fedora minimal -> niri + Noctalia"
     echo "  ----------------------------------------------------"
     echo ""
 

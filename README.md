@@ -1,4 +1,4 @@
-# fedirinoc
+# fednirinoc
 
 A post-install bash script that sets up [niri](https://github.com/niri-wm/niri) + [Noctalia](https://noctalia.dev) on a minimal Fedora install.
 

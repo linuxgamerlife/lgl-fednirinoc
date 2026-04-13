@@ -54,5 +54,5 @@ Initial release. Research-based bash script, partially tested in VM.
 ### Not included (Noctalia handles)
 - Wallpaper, notifications, lock screen, night light, status bar, app launcher
 
-[0.0.2]: https://github.com/linuxgamerlife/lgl-fedirinoc/compare/v0.0.1...v0.0.2
-[0.0.1]: https://github.com/linuxgamerlife/lgl-fedirinoc/releases/tag/v0.0.1
+[0.0.2]: https://github.com/linuxgamerlife/lgl-fednirinoc/compare/v0.0.1...v0.0.2
+[0.0.1]: https://github.com/linuxgamerlife/lgl-fednirinoc/releases/tag/v0.0.1
