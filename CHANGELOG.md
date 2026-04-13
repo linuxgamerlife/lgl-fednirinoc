@@ -9,8 +9,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Changed
-- Replaced `qt6ct` with `adwaita-qt` + `adwaita-qt6` for Qt theming — native Adwaita style for Qt5 and Qt6 apps without a config tool
-- Niri env var changed from `QT_QPA_PLATFORMTHEME "qt6ct"` to `QT_STYLE_OVERRIDE "adwaita"`
+- Replaced `qt6ct` (then briefly `qadwaitadecorations-qt6`) back to `qt6ct` — confirmed correct for F43, `adwaita-qt`/`adwaita-qt6` dropped F39+, `qadwaitadecorations-qt6` not in F43 repos
+- Niri env var: `QT_QPA_PLATFORMTHEME "qt6ct"` — qt6ct configured post-install via GUI; Qt5 fallback (`qt5ct`) commented in package list
+- Dark mode: autostart now sets both `gtk-theme adw-gtk3-dark` and `color-scheme prefer-dark` via gsettings on first login (covers GTK3, GTK4, and portal-aware apps)
 
 ### Planned
 - Live hardware testing

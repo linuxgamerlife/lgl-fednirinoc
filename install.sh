@@ -132,9 +132,9 @@ install_packages() {
         pipewire-pulse
         wireplumber
 
-        # Qt theming (Adwaita style for Qt5+Qt6 apps)
-        adwaita-qt
-        adwaita-qt6
+        # Qt theming (qt6ct — config tool for Qt6 apps; adwaita-qt/adwaita-qt6 dropped F39+)
+        qt6ct
+        # qt5ct  # uncomment if you have Qt5 apps that don't honour the Qt6 theme
 
         # Optional but integrated by Noctalia
         cliphist
@@ -194,9 +194,10 @@ configure_niri() {
 // fednirinoc -- appended by install.sh v0.0.2
 // ---------------------------------------------
 
-// Qt theming (Adwaita style for Qt5+Qt6)
+// Qt theming — qt6ct reads ~/.config/qt6ct/qt6ct.conf (configure via: qt6ct)
+// Qt5 apps won't pick this up — run them with: QT_QPA_PLATFORMTHEME=qt5ct <app>
 environment {
-    QT_STYLE_OVERRIDE "adwaita"
+    QT_QPA_PLATFORMTHEME "qt6ct"
 }
 
 // Noctalia shell
@@ -218,7 +219,7 @@ spawn-at-startup "/usr/libexec/lxqt-policykit-agent"
 // Note your output name and mode, then uncomment and edit below, then:
 //   niri msg action quit
 //
-// output "eDP-1" {
+// output "Virtual-1" {
 //     mode "1920x1080@60.000"
 //     scale 1.0
 //     transform "normal"
@@ -278,7 +279,7 @@ configure_gtk_theme() {
 [Desktop Entry]
 Type=Application
 Name=fednirinoc GTK theme setup
-Exec=bash -c 'gsettings set org.gnome.desktop.interface gtk-theme adw-gtk3 && rm -f ${AUTOSTART_FILE}'
+Exec=bash -c 'gsettings set org.gnome.desktop.interface gtk-theme adw-gtk3-dark && gsettings set org.gnome.desktop.interface color-scheme prefer-dark && rm -f ${AUTOSTART_FILE}'
 X-GNOME-Autostart-enabled=true
 EOF
 
