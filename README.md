@@ -19,6 +19,18 @@ Fedora minimal (TTY) → run `install.sh` → type `niri-session` → niri + Noc
 
 No display manager. No greeter. Lightweight by design.
 
+## Install
+
+From a fresh Fedora minimal TTY login:
+
+```bash
+sudo dnf install -y git
+git clone https://github.com/linuxgamerlife/lgl-fednirinoc.git
+cd lgl-fednirinoc
+chmod +x install.sh
+./install.sh
+```
+
 ## What it does
 
 1. Enables repos (avengemedia/danklinux COPR + terra)
