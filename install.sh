@@ -79,12 +79,12 @@ preflight() {
 setup_repos() {
     info "Enabling repos..."
 
-    # niri COPR
-    if ! sudo dnf copr list --enabled 2>/dev/null | grep -q "avengemedia/dms"; then
-        sudo dnf copr enable -y avengemedia/dms
-        success "Enabled COPR: avengemedia/dms"
+    # niri COPR (avengemedia/danklinux — niri moved here from avengemedia/dms)
+    if ! sudo dnf copr list --enabled 2>/dev/null | grep -q "avengemedia/danklinux"; then
+        sudo dnf copr enable -y avengemedia/danklinux
+        success "Enabled COPR: avengemedia/danklinux"
     else
-        info "COPR avengemedia/dms already enabled."
+        info "COPR avengemedia/danklinux already enabled."
     fi
 
     # Terra (Noctalia)
