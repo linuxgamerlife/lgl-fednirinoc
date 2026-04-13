@@ -131,8 +131,8 @@ install_packages() {
         xdg-desktop-portal-gnome
         gnome-keyring
 
-        # Session essentials
-        polkit-gnome
+        # Session essentials (polkit-gnome removed in F41+, mate-polkit is GTK equivalent)
+        mate-polkit
         pipewire
         pipewire-pulse
         wireplumber
@@ -196,6 +196,9 @@ configure_niri() {
 
 // Noctalia shell
 spawn-at-startup "qs" "-c" "noctalia-shell"
+
+// Polkit agent (mate-polkit, polkit-gnome removed in F41+)
+spawn-at-startup "/usr/libexec/polkit-mate-authentication-agent-1"
 
 // Noctalia required: rounded corners
 window-rule {
