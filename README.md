@@ -81,7 +81,7 @@ Both default to skip — press Enter to pass.
 | Screencasting broken | Known niri bug [#2399](https://github.com/niri-wm/niri/issues/2399) | Restart portals manually |
 | Suspend → red screen | Known niri + Fedora GPU bug | Avoid suspend |
 | Display output config | Requires running niri | Manual step post-install |
-| `power-profiles-daemon` conflicts with `tuned-ppd` | Fedora minimal conflict | Excluded from install |
+| `power-profiles-daemon` conflicts with `tuned-ppd` | `tuned` (and `tuned-ppd`) ship by default on Fedora — `power-profiles-daemon` always conflicts | Excluded from install |
 
 ## Docs
 
