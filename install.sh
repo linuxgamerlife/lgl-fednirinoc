@@ -257,7 +257,28 @@ EOF
 }
 
 # ─────────────────────────────────────────────
-# Phase 5: GTK theme
+# Phase 5: System environment
+# ─────────────────────────────────────────────
+
+configure_system_env() {
+    info "Writing system environment vars..."
+
+    # Qt theme must be in /etc/environment so polkit agents and other
+    # privileged/system-spawned Qt processes inherit it — niri's config.kdl
+    # environment block is not always propagated outside the user session.
+    ENV_FILE="/etc/environment"
+    ENV_LINE='QT_QPA_PLATFORMTHEME=qt6ct'
+
+    if grep -q "QT_QPA_PLATFORMTHEME" "${ENV_FILE}" 2>/dev/null; then
+        info "QT_QPA_PLATFORMTHEME already set in ${ENV_FILE} — skipping."
+    else
+        echo "${ENV_LINE}" | sudo tee -a "${ENV_FILE}" > /dev/null
+        success "Added ${ENV_LINE} to ${ENV_FILE}"
+    fi
+}
+
+# ─────────────────────────────────────────────
+# Phase 6: GTK theme
 # ─────────────────────────────────────────────
 
 configure_gtk_theme() {
@@ -287,7 +308,7 @@ EOF
 }
 
 # ─────────────────────────────────────────────
-# Phase 6: PipeWire user session
+# Phase 7: PipeWire user session
 # ─────────────────────────────────────────────
 
 configure_pipewire() {
@@ -375,6 +396,7 @@ main() {
     install_packages
     configure_niri
     configure_portals
+    configure_system_env
     configure_gtk_theme
     configure_pipewire
     display_banner

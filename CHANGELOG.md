@@ -8,9 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+- `configure_system_env` phase: writes `QT_QPA_PLATFORMTHEME=qt6ct` to `/etc/environment` — ensures polkit dialogs and other system-spawned Qt processes inherit Qt theming (niri config.kdl env block alone is insufficient)
+
 ### Changed
-- Replaced `qt6ct` (then briefly `qadwaitadecorations-qt6`) back to `qt6ct` — confirmed correct for F43, `adwaita-qt`/`adwaita-qt6` dropped F39+, `qadwaitadecorations-qt6` not in F43 repos
-- Niri env var: `QT_QPA_PLATFORMTHEME "qt6ct"` — qt6ct configured post-install via GUI; Qt5 fallback (`qt5ct`) commented in package list
+- Replaced `qt6ct` (then briefly `qadwaitadecorations-qt6`) back to `qt6ct` — confirmed correct for F43; `adwaita-qt`/`adwaita-qt6` dropped F39+, `qadwaitadecorations-qt6` not in F43 repos
+- Niri env var: `QT_QPA_PLATFORMTHEME "qt6ct"` — qt6ct configured post-install via GUI; Qt5 per-app workaround documented (`QT_QPA_PLATFORMTHEME=qt5ct <app>`)
 - Dark mode: autostart now sets both `gtk-theme adw-gtk3-dark` and `color-scheme prefer-dark` via gsettings on first login (covers GTK3, GTK4, and portal-aware apps)
 
 ### Planned

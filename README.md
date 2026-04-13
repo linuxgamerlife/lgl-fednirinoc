@@ -21,8 +21,10 @@ No display manager. No greeter. Lightweight by design.
 2. Installs niri, Noctalia, and required deps
 3. Appends Noctalia startup config to `~/.config/niri/config.kdl`
 4. Writes xdg-portal config
-5. Enables PipeWire user session
-6. Prints post-install instructions
+5. Sets Qt theme env var in `/etc/environment` (system-wide, covers polkit dialogs)
+6. Registers a one-shot autostart to apply dark mode GTK theme on first login
+7. Enables PipeWire user session
+8. Prints post-install instructions
 
 ## What Noctalia handles
 
@@ -44,6 +46,10 @@ Log in at TTY, then:
 ```bash
 niri-session
 ```
+
+On first login, a one-shot autostart applies dark mode GTK theme automatically, then removes itself.
+
+Run `qt6ct` to configure Qt app theming (apply the Noctalia color scheme).
 
 Display config (run inside niri after first launch):
 ```bash
