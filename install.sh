@@ -132,8 +132,9 @@ install_packages() {
         pipewire-pulse
         wireplumber
 
-        # Qt theming (styles Qt6 apps outside of KDE)
-        qt6ct
+        # Qt theming (Adwaita style for Qt5+Qt6 apps)
+        adwaita-qt
+        adwaita-qt6
 
         # Optional but integrated by Noctalia
         cliphist
@@ -193,9 +194,9 @@ configure_niri() {
 // fedirinoc -- appended by install.sh v0.0.2
 // ---------------------------------------------
 
-// Qt6 theming
+// Qt theming (Adwaita style for Qt5+Qt6)
 environment {
-    QT_QPA_PLATFORMTHEME "qt6ct"
+    QT_STYLE_OVERRIDE "adwaita"
 }
 
 // Noctalia shell
