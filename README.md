@@ -86,6 +86,10 @@ The script will offer to install these at the end:
 
 Both default to skip — press Enter to pass.
 
+## Browser File Picker
+
+The install script configures the GTK portal as the FileChooser handler. If the file picker still doesn't work in Firefox, in `about:config` set `widget.use-xdg-desktop-portal.file-picker` to `0` to use the native GTK file picker as a fallback.
+
 ## Known Issues
 
 | Issue | Status | Workaround |

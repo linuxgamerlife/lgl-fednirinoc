@@ -20,6 +20,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - `configure_system_env` phase: writes `QT_QPA_PLATFORMTHEME=qt6ct` to `/etc/environment` — ensures polkit dialogs and other system-spawned Qt processes inherit Qt theming (niri config.kdl env block alone is insufficient)
 - `offer_lgl_tools` phase: optional post-install prompts for LGL System Loadout (graphical Fedora setup wizard) and LGL SCX Scheduler Manager (Qt6 GUI for sched-ext BPF schedulers) — both default to skip
 
+### Fixed
+- Portal config written to wrong path (`~/.config/niri/niri-portals.conf`) — xdg-desktop-portal never read it as no `niri.portal` file exists in the system portals directory. Now writes to `~/.config/xdg-desktop-portal/niri-portals.conf` which is in the actual search path
+- Added `org.freedesktop.impl.portal.FileChooser=gtk` to portal config — without it gnome portal intercepts FileChooser calls and fails silently on niri (requires GNOME Shell)
+
 ### Changed
 - Replaced `qt6ct` (then briefly `qadwaitadecorations-qt6`) back to `qt6ct` — confirmed correct for F43; `adwaita-qt`/`adwaita-qt6` dropped F39+, `qadwaitadecorations-qt6` not in F43 repos
 - Niri env var: `QT_QPA_PLATFORMTHEME "qt6ct"` — qt6ct configured post-install via GUI; Qt5 per-app workaround documented (`QT_QPA_PLATFORMTHEME=qt5ct <app>`)

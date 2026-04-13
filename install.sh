@@ -238,7 +238,8 @@ EOF
 configure_portals() {
     info "Writing portal config..."
 
-    PORTAL_CONF="${NIRI_CONFIG_DIR}/niri-portals.conf"
+    PORTAL_CONF="${SCRIPT_HOME}/.config/xdg-desktop-portal/niri-portals.conf"
+    mkdir -p "${SCRIPT_HOME}/.config/xdg-desktop-portal"
 
     if [[ -f "${PORTAL_CONF}" ]]; then
         info "niri-portals.conf already exists — skipping."
@@ -248,9 +249,10 @@ configure_portals() {
     cat > "${PORTAL_CONF}" << 'EOF'
 [preferred]
 default=gnome;gtk;
-
-[org.freedesktop.impl.portal.FileChooser]
-default=gtk
+org.freedesktop.impl.portal.Access=gtk;
+org.freedesktop.impl.portal.Notification=gtk;
+org.freedesktop.impl.portal.Secret=gnome-keyring;
+org.freedesktop.impl.portal.FileChooser=gtk;
 EOF
 
     success "Portal config written."
