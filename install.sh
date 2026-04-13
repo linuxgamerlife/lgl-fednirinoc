@@ -124,6 +124,7 @@ install_packages() {
         greetd
         greetd-selinux
         tuigreet
+        policycoreutils-python-utils
 
         # Portals
         xdg-desktop-portal
@@ -139,7 +140,8 @@ install_packages() {
 
         # Optional but integrated by Noctalia
         cliphist
-        power-profiles-daemon
+        # power-profiles-daemon conflicts with tuned-ppd on Fedora minimal
+        # tuned-ppd is already installed and provides the same ppd-service
     )
 
     if [[ "${ADW_AVAILABLE}" == "true" ]]; then
