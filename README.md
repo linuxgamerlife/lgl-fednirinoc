@@ -5,11 +5,15 @@ A post-install bash script that sets up [niri](https://github.com/niri-wm/niri) 
 ---
 
 > [!WARNING]
-> **Work in progress. Tested in VM only.**
-> 
+> **Tested on VMs and AMD hardware. Works fine.**
+>
 > **VM requirements:** GPU acceleration must be enabled with OpenGL support (e.g. VirtIO GPU + 3D acceleration in QEMU/KVM). Without this niri will not start.
 >
+> **Minimal install:** The only pre-installed terminal is Alacritty. Install whatever else you want — no guarantees on what other apps work.
+>
 > **To start after install:** log in at the TTY, then run `niri`. There is no display manager.
+>
+> **First boot:** Noctalia may not appear the first time you run Niri after first boot. Press `Super+T` to open Alacritty and type `reboot`. It will start correctly on the next boot.
 
 ---
 
