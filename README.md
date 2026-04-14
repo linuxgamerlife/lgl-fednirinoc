@@ -9,13 +9,13 @@ A post-install bash script that sets up [niri](https://github.com/niri-wm/niri) 
 > 
 > **VM requirements:** GPU acceleration must be enabled with OpenGL support (e.g. VirtIO GPU + 3D acceleration in QEMU/KVM). Without this niri will not start.
 >
-> **To start after install:** log in at the TTY, then run `niri-session`. There is no display manager.
+> **To start after install:** log in at the TTY, then run `niri`. There is no display manager.
 
 ---
 
 ## Concept
 
-Fedora Everything (TTY) → run `install.sh` → type `niri-session` → niri + Noctalia
+Fedora Everything (TTY) → run `install.sh` → type `niri` → niri + Noctalia
 
 No display manager. No greeter. Lightweight by design.
 
@@ -63,7 +63,7 @@ These are not configured by the script — Noctalia manages them internally:
 Log in at TTY, then:
 
 ```bash
-niri-session
+niri
 ```
 
 On first login, a one-shot autostart applies dark mode GTK theme automatically, then removes itself.

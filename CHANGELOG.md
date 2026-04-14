@@ -36,7 +36,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 - Reverted from GTK app back to bash script approach — simpler, no base DE required
-- Removed greetd/tuigreet — no display manager, user types `niri-session` from TTY
+- Removed greetd/tuigreet — no display manager, user types `niri` from TTY
 - Replaced `mate-polkit` with `lxqt-policykit` — more modern, same function
 - `xwayland-satellite` now explicitly spawned in config.kdl (required for X11/game compatibility)
 - Removed cosmetic window-rule (rounded corners) from config append — not required

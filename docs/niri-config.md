@@ -194,7 +194,7 @@ debug {
 
 From TTY:
 ```bash
-niri-session
+niri
 ```
 
 ## Blur (Experimental)

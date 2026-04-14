@@ -96,7 +96,7 @@ sudo loginctl enable-linger $USER
 ## Post-Install
 
 ```
-Log in at TTY → type: niri-session
+Log in at TTY → type: niri
 ```
 
 Display config (first login inside niri):

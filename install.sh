@@ -360,7 +360,7 @@ display_banner() {
     echo "================================================================"
     echo ""
     echo "  TO START:"
-    echo "    Log in at TTY, then type: niri-session"
+    echo "    Log in at TTY, then type: niri"
     echo ""
     echo "  DISPLAY CONFIGURATION (after first login, inside niri):"
     echo "    1. Run: niri msg outputs"
