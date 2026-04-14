@@ -31,9 +31,10 @@ sudo dnf install -y --exclude=power-profiles-daemon --skip-broken \
   pipewire \
   pipewire-pulse \
   wireplumber \
-  cliphist \
-  adw-gtk3-theme \
-  qt6ct
+  gnome-menus \
+  qt6ct \
+  cliphist
+  # adw-gtk3-theme  # added automatically if available in repos
   # qt5ct  # uncomment for Qt5 app theming
 ```
 
