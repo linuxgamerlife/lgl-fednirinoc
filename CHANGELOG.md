@@ -14,6 +14,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.2.0] - 2026-04-15
+
+### Changed
+- **Architecture:** Cinnamon Desktop group now installed first as the base layer. Provides lightdm (display manager), PipeWire + WirePlumber, polkit agent, gnome-keyring, gnome-menus. Niri + Noctalia sit on top as a selectable DM session.
+- **Session start:** User now reboots into the display manager and selects the Niri session — no longer requires TTY login and manual `niri` command.
+- Post-install banner updated to reflect DM-based session start.
+
+### Added
+- `install_cinnamon()` phase — `dnf5 group install -y cinnamon-desktop` — runs before repos and package install
+- `ensure_niri_session_file()` phase — checks for `/usr/share/wayland-sessions/niri.desktop`, writes it if the COPR didn't ship it (required for lightdm to offer the Niri session)
+
+### Removed
+- `configure_pipewire()` phase — PipeWire user session setup removed; Cinnamon Desktop group provides and manages PipeWire via its own systemd units
+
+### Changed (packages)
+- Removed from explicit package install: `pipewire`, `pipewire-pulse`, `wireplumber`, `gnome-keyring`, `gnome-menus` — all now provided by Cinnamon Desktop group
+
+---
+
 ## [0.1.0] - 2026-04-13
 
 ### Added
@@ -68,6 +87,7 @@ Initial release. Research-based bash script, partially tested in VM.
 ### Not included (Noctalia handles)
 - Wallpaper, notifications, lock screen, night light, status bar, app launcher
 
+[0.2.0]: https://github.com/linuxgamerlife/lgl-fednirinoc/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/linuxgamerlife/lgl-fednirinoc/compare/v0.0.2...v0.1.0
 [0.0.2]: https://github.com/linuxgamerlife/lgl-fednirinoc/compare/v0.0.1...v0.0.2
 [0.0.1]: https://github.com/linuxgamerlife/lgl-fednirinoc/releases/tag/v0.0.1

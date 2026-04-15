@@ -1,6 +1,6 @@
 # fednirinoc
 
-A post-install bash script that sets up [niri](https://github.com/niri-wm/niri) + [Noctalia](https://noctalia.dev) on a minimal Fedora install.
+A post-install bash script that sets up [niri](https://github.com/niri-wm/niri) + [Noctalia](https://noctalia.dev) on a minimal Fedora install, using Cinnamon Desktop as the base layer for the display manager and core deps.
 
 ---
 
@@ -11,17 +11,17 @@ A post-install bash script that sets up [niri](https://github.com/niri-wm/niri) 
 >
 > **Minimal install:** The only pre-installed terminal is Alacritty. Install whatever else you want — no guarantees on what other apps work.
 >
-> **To start after install:** log in at the TTY, then run `niri`. There is no display manager.
+> **To start after install:** reboot → log in via the display manager → select **Niri** from the session menu (gear/cog icon at the login screen).
 >
-> **First boot:** Noctalia may not appear the first time you run Niri after first boot. Press `Super+T` to open Alacritty and type `reboot`. It will start correctly on the next boot.
+> **First boot:** Noctalia may not appear the first time you run Niri. Log back out, select Niri again — it will start correctly.
 
 ---
 
 ## Concept
 
-Fedora Everything (TTY) → run `install.sh` → type `niri` → niri + Noctalia
+Fedora Everything (minimal) → run `install.sh` → reboot → DM login → select Niri or Cinnamon session
 
-No display manager. No greeter. Lightweight by design.
+Cinnamon Desktop is installed as the base layer. It provides the display manager (lightdm), PipeWire, polkit, and GTK environment. Niri + Noctalia sit on top as a selectable session — no TTY login, no manual session start.
 
 ## Install
 
@@ -39,15 +39,16 @@ chmod +x install.sh
 
 ## What it does
 
-1. Enables repos (avengemedia/danklinux COPR + terra)
-2. Installs niri, Noctalia, and required deps
-3. Appends Noctalia startup config to `~/.config/niri/config.kdl`
-4. Writes xdg-portal config
-5. Sets Qt theme env var in `/etc/environment` (system-wide, covers polkit dialogs)
-6. Registers a one-shot autostart to apply dark mode GTK theme on first login
-7. Enables PipeWire user session
-8. Optionally installs LGL System Loadout and/or LGL SCX Scheduler Manager
-9. Prints post-install instructions
+1. Installs Cinnamon Desktop group (provides lightdm, PipeWire, polkit, GTK env)
+2. Enables repos (avengemedia/danklinux COPR + terra)
+3. Installs niri, Noctalia, and required deps
+4. Ensures `/usr/share/wayland-sessions/niri.desktop` exists so lightdm offers the Niri session
+5. Appends Noctalia startup config to `~/.config/niri/config.kdl`
+6. Writes xdg-portal config
+7. Sets Qt theme env var in `/etc/environment` (system-wide, covers polkit dialogs)
+8. Registers a one-shot autostart to apply dark mode GTK theme on first login
+9. Optionally installs LGL System Loadout and/or LGL SCX Scheduler Manager
+10. Prints post-install instructions
 
 ## What Noctalia handles
 
@@ -64,11 +65,7 @@ These are not configured by the script — Noctalia manages them internally:
 
 ## After install
 
-Log in at TTY, then:
-
-```bash
-niri
-```
+Reboot, then at the login screen select the **Niri** session from the session picker (gear/cog icon).
 
 On first login, a one-shot autostart applies dark mode GTK theme automatically, then removes itself.
 
@@ -104,7 +101,6 @@ The install script configures the GTK portal as the FileChooser handler. If the 
 | Suspend → red screen | Known niri + Fedora GPU bug | Avoid suspend |
 | Display output config | Requires running niri | Manual step post-install |
 | `power-profiles-daemon` conflicts with `tuned-ppd` | `tuned` (and `tuned-ppd`) ship by default on Fedora — `power-profiles-daemon` always conflicts | Excluded from install |
-| KDE "Choose Application" dialog empty | `applications.menu` missing — KDE app discovery requires `gnome-menus` | Included in install |
 
 ## Docs
 

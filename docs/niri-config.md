@@ -38,8 +38,6 @@ output "eDP-1" {
 
 > If Noctalia or other spawn-at-startup apps fail to launch, run `niri validate` first — config parse error is the most likely cause.
 
-> Script flow: run `niri msg outputs` in a subshell, parse output names, prompt user to confirm/select, inject into config.
-
 ## Xwayland
 
 xwayland-satellite must be explicitly spawned in config.kdl for X11/game compatibility:
@@ -132,7 +130,7 @@ gsettings set org.gnome.desktop.interface gtk-theme adw-gtk3-dark
 gsettings set org.gnome.desktop.interface color-scheme prefer-dark
 ```
 
-Both gsettings commands require a running dbus session (not available from TTY). The install script registers an autostart entry that runs them once on first niri login, then deletes itself.
+Both gsettings commands require a running dbus session. The install script registers an autostart entry that runs them once on first login, then deletes itself.
 
 **3. Qt apps** — configure dark palette in `qt6ct` GUI after first login. Noctalia's own color scheme is the recommended palette.
 
@@ -149,26 +147,22 @@ spawn-at-startup "qs" "-c" "noctalia-shell"
 
 **Do NOT** also enable `noctalia.service` via systemd if using spawn-at-startup — two instances will launch. Pick one method. spawn-at-startup is simpler; systemd is more robust. Recommended: spawn-at-startup for now.
 
-**polkit** — do NOT spawn via spawn-at-startup (race condition with session init). Use systemd instead:
-```bash
-systemctl --user enable --now polkit-gnome-authentication-agent-1 2>/dev/null || \
-  systemctl --user enable --now polkit 2>/dev/null
-```
-If no systemd unit exists, fall back to spawn-at-startup as last resort:
+**polkit** — `lxqt-policykit` is spawned via spawn-at-startup within the niri session. Cinnamon session has its own polkit agent and does not use this:
 ```kdl
-spawn-at-startup "/usr/libexec/polkit-gnome-authentication-agent-1"
+spawn-at-startup "/usr/libexec/lxqt-policykit-agent"
 ```
 
 ## Portal Config
 
-Create `~/.config/niri/niri-portals.conf`:
+Create `~/.config/xdg-desktop-portal/niri-portals.conf`:
 
 ```ini
 [preferred]
 default=gnome;gtk;
-
-[org.freedesktop.impl.portal.FileChooser]
-default=gtk
+org.freedesktop.impl.portal.Access=gtk;
+org.freedesktop.impl.portal.Notification=gtk;
+org.freedesktop.impl.portal.Secret=gnome-keyring;
+org.freedesktop.impl.portal.FileChooser=gtk;
 ```
 
 > Prevents Nautilus being pulled in as file picker when xdg-desktop-portal-gnome is installed.
@@ -192,10 +186,7 @@ debug {
 
 ## Session Start
 
-From TTY:
-```bash
-niri
-```
+Reboot → log in via display manager → select **Niri** from the session picker (gear/cog icon at the login screen).
 
 ## Blur (Experimental)
 

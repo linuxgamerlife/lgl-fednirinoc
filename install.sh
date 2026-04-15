@@ -1,6 +1,8 @@
 #!/bin/bash
-# fednirinoc v0.1.0
-# Post-install script: Fedora minimal TTY -> niri + Noctalia
+# fednirinoc v0.2.0
+# Post-install script: Fedora minimal TTY -> Cinnamon + niri + Noctalia
+# Installs Cinnamon Desktop group first (provides DM, PipeWire, polkit, GTK env),
+# then layers niri + Noctalia on top as a selectable session in lightdm.
 # Run as your regular user with sudo access.
 
 set -euo pipefail
@@ -73,7 +75,20 @@ preflight() {
 }
 
 # ─────────────────────────────────────────────
-# Phase 1: Repos
+# Phase 1: Cinnamon Desktop group
+# ─────────────────────────────────────────────
+
+install_cinnamon() {
+    info "Installing Cinnamon Desktop group..."
+    info "This provides: lightdm, PipeWire, polkit, GTK env, and core desktop deps."
+
+    sudo dnf5 group install -y cinnamon-desktop
+
+    success "Cinnamon Desktop group installed."
+}
+
+# ─────────────────────────────────────────────
+# Phase 2: Repos
 # ─────────────────────────────────────────────
 
 setup_repos() {
@@ -102,7 +117,7 @@ setup_repos() {
 }
 
 # ─────────────────────────────────────────────
-# Phase 2: Packages
+# Phase 3: Packages
 # ─────────────────────────────────────────────
 
 install_packages() {
@@ -124,16 +139,10 @@ install_packages() {
         xdg-desktop-portal
         xdg-desktop-portal-gtk
         xdg-desktop-portal-gnome
-        gnome-keyring
 
-        # Session essentials (polkit-gnome removed in F41+, lxqt-policykit is modern lightweight replacement)
+        # Polkit agent for niri session
+        # (Cinnamon has its own agent; lxqt-policykit is spawned inside niri session only)
         lxqt-policykit
-        pipewire
-        pipewire-pulse
-        wireplumber
-
-        # App menu discovery (required by KDE apps like Dolphin to find installed apps)
-        gnome-menus
 
         # Qt theming (qt6ct — config tool for Qt6 apps; adwaita-qt/adwaita-qt6 dropped F39+)
         qt6ct
@@ -154,7 +163,36 @@ install_packages() {
 }
 
 # ─────────────────────────────────────────────
-# Phase 3: Niri config
+# Phase 4: Niri session file
+# ─────────────────────────────────────────────
+
+ensure_niri_session_file() {
+    info "Checking for niri wayland session file..."
+
+    NIRI_SESSION="/usr/share/wayland-sessions/niri.desktop"
+
+    if [[ -f "${NIRI_SESSION}" ]]; then
+        success "niri.desktop already present — lightdm will offer Niri session."
+        return
+    fi
+
+    warn "niri.desktop not found — writing manually so lightdm can see the session."
+
+    sudo mkdir -p /usr/share/wayland-sessions
+    sudo tee "${NIRI_SESSION}" > /dev/null << 'EOF'
+[Desktop Entry]
+Name=Niri
+Comment=A scrollable-tiling Wayland compositor
+Exec=niri-session
+Type=Application
+DesktopNames=niri
+EOF
+
+    success "Wrote ${NIRI_SESSION}"
+}
+
+# ─────────────────────────────────────────────
+# Phase 5: Niri config
 # ─────────────────────────────────────────────
 
 configure_niri() {
@@ -194,7 +232,7 @@ configure_niri() {
     cat >> "${NIRI_CONFIG}" << 'EOF'
 
 // ---------------------------------------------
-// fednirinoc -- appended by install.sh v0.1.0
+// fednirinoc -- appended by install.sh v0.2.0
 // ---------------------------------------------
 
 // Qt theming — qt6ct reads ~/.config/qt6ct/qt6ct.conf (configure via: qt6ct)
@@ -235,7 +273,7 @@ EOF
 }
 
 # ─────────────────────────────────────────────
-# Phase 4: Portal config
+# Phase 6: Portal config
 # ─────────────────────────────────────────────
 
 configure_portals() {
@@ -262,7 +300,7 @@ EOF
 }
 
 # ─────────────────────────────────────────────
-# Phase 5: System environment
+# Phase 7: System environment
 # ─────────────────────────────────────────────
 
 configure_system_env() {
@@ -283,7 +321,7 @@ configure_system_env() {
 }
 
 # ─────────────────────────────────────────────
-# Phase 6: GTK theme
+# Phase 8: GTK theme
 # ─────────────────────────────────────────────
 
 configure_gtk_theme() {
@@ -313,91 +351,7 @@ EOF
 }
 
 # ─────────────────────────────────────────────
-# Phase 7: PipeWire user session
-# ─────────────────────────────────────────────
-
-configure_pipewire() {
-    info "Enabling PipeWire user services..."
-
-    # These need a running user session — use loginctl enable-linger
-    # so user services activate at boot even before login
-    sudo loginctl enable-linger "${SCRIPT_USER}"
-
-    # Drop .wants symlinks manually since systemctl --user may not work from TTY
-    USER_SYSTEMD="${SCRIPT_HOME}/.config/systemd/user"
-    mkdir -p "${USER_SYSTEMD}/default.target.wants"
-
-    for SVC in pipewire.service pipewire-pulse.service wireplumber.service; do
-        UNIT_PATH=$(systemctl --user show -p FragmentPath "${SVC}" 2>/dev/null \
-            | cut -d= -f2 || true)
-        if [[ -z "${UNIT_PATH}" ]]; then
-            # Fallback paths
-            for DIR in /usr/lib/systemd/user /usr/share/systemd/user; do
-                if [[ -f "${DIR}/${SVC}" ]]; then
-                    UNIT_PATH="${DIR}/${SVC}"
-                    break
-                fi
-            done
-        fi
-        if [[ -n "${UNIT_PATH}" && -f "${UNIT_PATH}" ]]; then
-            ln -sf "${UNIT_PATH}" "${USER_SYSTEMD}/default.target.wants/${SVC}"
-            success "Enabled ${SVC}"
-        else
-            warn "Could not find unit file for ${SVC} — enable manually after first login:"
-            warn "  systemctl --user enable --now ${SVC}"
-        fi
-    done
-}
-
-# ─────────────────────────────────────────────
-# Phase 9: Post-install banner + reboot prompt
-# ─────────────────────────────────────────────
-
-display_banner() {
-    echo ""
-    echo "================================================================"
-    echo "  fednirinoc v0.1.0 -- Install Complete"
-    echo "================================================================"
-    echo ""
-    echo "  TO START:"
-    echo "    Log in at TTY, then type: niri"
-    echo ""
-    echo "  DISPLAY CONFIGURATION (after first login, inside niri):"
-    echo "    1. Run: niri msg outputs"
-    echo "    2. Note your output name (e.g. eDP-1) and mode"
-    echo "       (e.g. 1920x1080@60.000)"
-    echo "    3. Edit: ~/.config/niri/config.kdl"
-    echo "    4. Find the OUTPUT CONFIGURATION section and uncomment:"
-    echo ""
-    echo "         output \"YOUR-OUTPUT-NAME\" {"
-    echo "             mode \"WIDTHxHEIGHT@REFRESH\""
-    echo "             scale 1.0"
-    echo "             transform \"normal\""
-    echo "         }"
-    echo ""
-    echo "    5. Restart niri: niri msg action quit"
-    echo ""
-    echo "  KNOWN ISSUE:"
-    echo "    - Noctalia may not appear the first time you run Niri after first boot"
-    echo "      Press Super+T to open Alacritty, then type: reboot"
-    echo "      It will start correctly on the next boot."
-    echo ""
-    echo "================================================================"
-    echo ""
-    echo "  !! MAKE A NOTE OF THE ABOVE BEFORE REBOOTING !!"
-    echo ""
-    read -rp "  Reboot now? [y/N] " yn_reboot
-    if [[ "${yn_reboot,,}" == "y" ]]; then
-        sudo reboot
-    else
-        echo ""
-        echo "  Reboot manually when ready: sudo reboot"
-        echo ""
-    fi
-}
-
-# ─────────────────────────────────────────────
-# Phase 8: Optional LGL tools
+# Phase 9: Optional LGL tools
 # ─────────────────────────────────────────────
 
 offer_lgl_tools() {
@@ -453,23 +407,71 @@ offer_lgl_tools() {
 }
 
 # ─────────────────────────────────────────────
+# Phase 10: Post-install banner + reboot prompt
+# ─────────────────────────────────────────────
+
+display_banner() {
+    echo ""
+    echo "================================================================"
+    echo "  fednirinoc v0.2.0 -- Install Complete"
+    echo "================================================================"
+    echo ""
+    echo "  TO START:"
+    echo "    Reboot -> log in via the display manager -> select 'Niri'"
+    echo "    from the session menu (gear/cog icon at login screen)."
+    echo ""
+    echo "  DISPLAY CONFIGURATION (after first login, inside niri):"
+    echo "    1. Run: niri msg outputs"
+    echo "    2. Note your output name (e.g. eDP-1) and mode"
+    echo "       (e.g. 1920x1080@60.000)"
+    echo "    3. Edit: ~/.config/niri/config.kdl"
+    echo "    4. Find the OUTPUT CONFIGURATION section and uncomment:"
+    echo ""
+    echo "         output \"YOUR-OUTPUT-NAME\" {"
+    echo "             mode \"WIDTHxHEIGHT@REFRESH\""
+    echo "             scale 1.0"
+    echo "             transform \"normal\""
+    echo "         }"
+    echo ""
+    echo "    5. Restart niri: niri msg action quit"
+    echo ""
+    echo "  KNOWN ISSUE:"
+    echo "    - Noctalia may not appear the first time you run Niri after first boot"
+    echo "      Log back out, select Niri again, and it will start correctly."
+    echo ""
+    echo "================================================================"
+    echo ""
+    echo "  !! MAKE A NOTE OF THE ABOVE BEFORE REBOOTING !!"
+    echo ""
+    read -rp "  Reboot now? [y/N] " yn_reboot
+    if [[ "${yn_reboot,,}" == "y" ]]; then
+        sudo reboot
+    else
+        echo ""
+        echo "  Reboot manually when ready: sudo reboot"
+        echo ""
+    fi
+}
+
+# ─────────────────────────────────────────────
 # Main
 # ─────────────────────────────────────────────
 
 main() {
     echo ""
-    echo "  fednirinoc v0.1.0 -- Fedora minimal -> niri + Noctalia"
-    echo "  ----------------------------------------------------"
+    echo "  fednirinoc v0.2.0 -- Fedora minimal -> Cinnamon + niri + Noctalia"
+    echo "  ------------------------------------------------------------------"
     echo ""
 
     preflight
+    install_cinnamon
     setup_repos
     install_packages
+    ensure_niri_session_file
     configure_niri
     configure_portals
     configure_system_env
     configure_gtk_theme
-    configure_pipewire
     offer_lgl_tools
     display_banner
 }

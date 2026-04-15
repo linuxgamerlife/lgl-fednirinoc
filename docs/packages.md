@@ -1,5 +1,20 @@
 # Package List
 
+## Cinnamon Desktop Group
+
+```bash
+sudo dnf5 group install -y cinnamon-desktop
+```
+
+Installed first. Provides the display manager, PipeWire stack, polkit agent, and core GTK environment. Niri/Noctalia layer on top — Cinnamon session remains available as a fallback.
+
+**Provided by this group (not installed separately):**
+- `lightdm` — display manager / greeter
+- `pipewire` + `pipewire-pulse` + `wireplumber` — audio and screen share
+- `gnome-keyring` — secret storage
+- `gnome-menus` — `applications.menu` for KDE app discovery
+- polkit agent
+
 ## Repos
 
 ```bash
@@ -26,12 +41,7 @@ sudo dnf install -y --exclude=power-profiles-daemon --skip-broken \
   xdg-desktop-portal \
   xdg-desktop-portal-gtk \
   xdg-desktop-portal-gnome \
-  gnome-keyring \
   lxqt-policykit \
-  pipewire \
-  pipewire-pulse \
-  wireplumber \
-  gnome-menus \
   qt6ct \
   cliphist
   # adw-gtk3-theme  # added automatically if available in repos
@@ -51,18 +61,16 @@ sudo dnf install -y --exclude=power-profiles-daemon --skip-broken \
 | `git` | Noctalia dep |
 | `xdg-desktop-portal-gnome` | Screencasting support |
 | `xdg-desktop-portal-gtk` | File picker |
-| `gnome-keyring` | Secret storage |
-| `lxqt-policykit` | Polkit auth agent — replaces polkit-gnome (removed F41+) |
-| `pipewire` + `pipewire-pulse` + `wireplumber` | Audio + screen share |
+| `lxqt-policykit` | Polkit auth agent for niri session — replaces polkit-gnome (removed F41+); Cinnamon session uses its own agent |
 | `cliphist` | Clipboard history — Noctalia integrates directly |
 | `adw-gtk3-theme` | GTK theme for GTK apps running under niri |
-| `gnome-menus` | Provides `applications.menu` — required by KDE apps (Dolphin etc.) to discover installed apps |
 | `qt6ct` | Qt6 theme config tool — set style/palette for Qt6 apps (`adwaita-qt`/`adwaita-qt6` dropped F39+) |
 | `qt5ct` | Optional — same for Qt5 apps if needed |
 
 ## Exclusions
 
 - `power-profiles-daemon` — conflicts with `tuned-ppd`, which ships as part of `tuned` (installed by default on Fedora). Excluded via `--exclude=power-profiles-daemon`
+- `pipewire` / `wireplumber` / `gnome-keyring` / `gnome-menus` — provided by the Cinnamon Desktop group
 - `waybar` — not needed, Noctalia provides the bar
 - `mako` — not needed, Noctalia handles notifications
 - `swaybg` / `wlsunset` — not needed, Noctalia handles wallpaper and night light
