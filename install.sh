@@ -84,6 +84,9 @@ install_cinnamon() {
 
     sudo dnf5 group install -y cinnamon-desktop
 
+    sudo systemctl set-default graphical.target
+    success "Default target set to graphical.target."
+
     success "Cinnamon Desktop group installed."
 }
 

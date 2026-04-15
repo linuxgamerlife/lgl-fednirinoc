@@ -6,9 +6,12 @@ Assumes: Fedora minimal install, boots to TTY, internet connected, logged in as 
 
 ```bash
 sudo dnf5 group install -y cinnamon-desktop
+sudo systemctl set-default graphical.target
 ```
 
 Provides: lightdm (display manager), PipeWire + WirePlumber, polkit agent, gnome-keyring, gnome-menus, GTK environment. Niri + Noctalia layer on top as a selectable DM session.
+
+> Fedora minimal defaults to `multi-user.target` — `set-default graphical.target` is required or the display manager won't start on reboot.
 
 ## Phase 2: Repos
 
