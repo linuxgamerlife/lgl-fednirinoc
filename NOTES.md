@@ -43,9 +43,9 @@ Reboot → log in at DM → select **Niri** session from session picker (gear/co
 - External deps: brightnessctl, ImageMagick, python3, git, cliphist
 
 # Polkit
-- Cinnamon session: handled by Cinnamon's own polkit agent
-- Niri session: lxqt-policykit spawned via spawn-at-startup in config.kdl
-- Binary: /usr/libexec/lxqt-policykit-agent
+- mate-polkit installed by Cinnamon Desktop group — provides polkit-gnome-authentication-agent-1 (replaces polkit-gnome removed in F41+)
+- Both Cinnamon and niri sessions use the same binary: /usr/libexec/polkit-gnome-authentication-agent-1
+- Niri session spawns it explicitly via spawn-at-startup in config.kdl
 
 # Xwayland
 - xwayland-satellite spawned via spawn-at-startup in config.kdl

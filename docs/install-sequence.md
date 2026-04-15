@@ -39,14 +39,13 @@ sudo dnf install -y --exclude=power-profiles-daemon --skip-broken \
   xdg-desktop-portal \
   xdg-desktop-portal-gtk \
   xdg-desktop-portal-gnome \
-  lxqt-policykit \
   qt6ct \
   cliphist \
   adw-gtk3-theme
 ```
 
 > `power-profiles-daemon` excluded — conflicts with `tuned-ppd` on Fedora minimal.
-> `pipewire`, `wireplumber`, `gnome-keyring`, `gnome-menus` omitted — provided by Cinnamon group.
+> `pipewire`, `wireplumber`, `gnome-keyring`, `gnome-menus`, `mate-polkit` omitted — provided by Cinnamon group.
 
 ## Phase 4: Niri Session File
 
@@ -81,7 +80,7 @@ environment {
 }
 spawn-at-startup "qs" "-c" "noctalia-shell"
 spawn-at-startup "xwayland-satellite"
-spawn-at-startup "/usr/libexec/lxqt-policykit-agent"
+spawn-at-startup "/usr/libexec/polkit-gnome-authentication-agent-1"
 
 // Uncomment if apps fail to focus when launched via Noctalia
 // debug {

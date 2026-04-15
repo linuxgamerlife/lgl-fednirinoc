@@ -143,10 +143,6 @@ install_packages() {
         xdg-desktop-portal-gtk
         xdg-desktop-portal-gnome
 
-        # Polkit agent for niri session
-        # (Cinnamon has its own agent; lxqt-policykit is spawned inside niri session only)
-        lxqt-policykit
-
         # Qt theming (qt6ct — config tool for Qt6 apps; adwaita-qt/adwaita-qt6 dropped F39+)
         qt6ct
         # qt5ct  # uncomment if you have Qt5 apps that don't honour the Qt6 theme
@@ -250,8 +246,8 @@ spawn-at-startup "qs" "-c" "noctalia-shell"
 // Xwayland (required for X11/game compatibility)
 spawn-at-startup "xwayland-satellite"
 
-// Polkit agent (polkit-gnome removed in F41+, using lxqt-policykit)
-spawn-at-startup "/usr/libexec/lxqt-policykit-agent"
+// Polkit agent — mate-polkit installed by Cinnamon Desktop group, provides polkit-gnome-authentication-agent-1
+spawn-at-startup "/usr/libexec/polkit-gnome-authentication-agent-1"
 
 // Uncomment if apps fail to focus when launched via Noctalia
 // debug {

@@ -13,7 +13,7 @@ Installed first. Provides the display manager, PipeWire stack, polkit agent, and
 - `pipewire` + `pipewire-pulse` + `wireplumber` — audio and screen share
 - `gnome-keyring` — secret storage
 - `gnome-menus` — `applications.menu` for KDE app discovery
-- polkit agent
+- `mate-polkit` — polkit auth agent; provides `/usr/libexec/polkit-gnome-authentication-agent-1` (replaces removed `polkit-gnome` on F41+)
 
 ## Repos
 
@@ -61,7 +61,7 @@ sudo dnf install -y --exclude=power-profiles-daemon --skip-broken \
 | `git` | Noctalia dep |
 | `xdg-desktop-portal-gnome` | Screencasting support |
 | `xdg-desktop-portal-gtk` | File picker |
-| `lxqt-policykit` | Polkit auth agent for niri session — replaces polkit-gnome (removed F41+); Cinnamon session uses its own agent |
+| `mate-polkit` | Polkit auth agent — provided by Cinnamon Desktop group; provides `polkit-gnome-authentication-agent-1` binary used by both Cinnamon and niri sessions |
 | `cliphist` | Clipboard history — Noctalia integrates directly |
 | `adw-gtk3-theme` | GTK theme for GTK apps running under niri |
 | `qt6ct` | Qt6 theme config tool — set style/palette for Qt6 apps (`adwaita-qt`/`adwaita-qt6` dropped F39+) |

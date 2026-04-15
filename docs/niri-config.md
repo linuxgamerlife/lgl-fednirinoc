@@ -147,9 +147,9 @@ spawn-at-startup "qs" "-c" "noctalia-shell"
 
 **Do NOT** also enable `noctalia.service` via systemd if using spawn-at-startup — two instances will launch. Pick one method. spawn-at-startup is simpler; systemd is more robust. Recommended: spawn-at-startup for now.
 
-**polkit** — `lxqt-policykit` is spawned via spawn-at-startup within the niri session. Cinnamon session has its own polkit agent and does not use this:
+**polkit** — `mate-polkit` (installed by Cinnamon Desktop group) provides `polkit-gnome-authentication-agent-1`. Spawned via spawn-at-startup in the niri session:
 ```kdl
-spawn-at-startup "/usr/libexec/lxqt-policykit-agent"
+spawn-at-startup "/usr/libexec/polkit-gnome-authentication-agent-1"
 ```
 
 ## Portal Config
