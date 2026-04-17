@@ -39,7 +39,7 @@ chmod +x install.sh
 
 ## What it does
 
-1. Installs Cinnamon Desktop group (provides lightdm, PipeWire, polkit, GTK env)
+1. Prompts whether to install Cinnamon Desktop group — skip if you already have a DE installed
 2. Enables repos (avengemedia/danklinux COPR + terra)
 3. Installs niri, Noctalia, and required deps
 4. Ensures `/usr/share/wayland-sessions/niri.desktop` exists so lightdm offers the Niri session

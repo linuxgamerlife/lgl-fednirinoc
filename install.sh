@@ -12,6 +12,7 @@ SCRIPT_HOME="${HOME}"
 NIRI_CONFIG_DIR="${SCRIPT_HOME}/.config/niri"
 NIRI_CONFIG="${NIRI_CONFIG_DIR}/config.kdl"
 ADW_AVAILABLE=false
+INSTALL_CINNAMON=true
 
 # ─────────────────────────────────────────────
 # Helpers
@@ -25,6 +26,30 @@ die()     { echo "  [FAIL] $*" >&2; exit 1; }
 require_sudo() {
     if ! sudo -v 2>/dev/null; then
         die "sudo access required. Run as a regular user with sudo."
+    fi
+}
+
+# ─────────────────────────────────────────────
+# Cinnamon prompt
+# ─────────────────────────────────────────────
+
+ask_cinnamon() {
+    echo ""
+    echo "  ----------------------------------------------------------------"
+    echo "          Cinnamon Desktop"
+    echo "  ----------------------------------------------------------------"
+    echo "  fednirinoc uses Cinnamon as its base desktop environment."
+    echo "  It provides: lightdm, PipeWire, polkit, GTK env, and core deps."
+    echo ""
+    echo "  Skip this if you already have a desktop environment installed."
+    echo "  ----------------------------------------------------------------"
+    echo ""
+    read -rp "  Install Cinnamon Desktop? [Y/n] " yn_cinnamon
+    if [[ "${yn_cinnamon,,}" == "n" ]]; then
+        INSTALL_CINNAMON=false
+        info "Skipping Cinnamon install — existing DE assumed."
+    else
+        INSTALL_CINNAMON=true
     fi
 }
 
@@ -462,8 +487,11 @@ main() {
     echo "  ------------------------------------------------------------------"
     echo ""
 
+    ask_cinnamon
     preflight
-    install_cinnamon
+    if [[ "${INSTALL_CINNAMON}" == "true" ]]; then
+        install_cinnamon
+    fi
     setup_repos
     install_packages
     ensure_niri_session_file

@@ -8,6 +8,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+- Cinnamon Desktop install is now optional — script prompts at startup, defaulting to `Y`. Answer `n` to skip if a DE is already installed. Rest of the script continues unchanged.
+
 ### Planned
 - Live hardware testing
 - GTK3 graphical installer app (future)
