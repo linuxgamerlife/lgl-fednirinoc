@@ -11,7 +11,7 @@ A post-install bash script that sets up [niri](https://github.com/niri-wm/niri) 
 >
 > **Terminal:** Alacritty is installed. You will need to install any other apps. Additional app decisions have not been made for you.
 >
-> **To start after install:** reboot → log in via the display manager → select **Niri** from the session menu (gear/cog icon at the login screen).
+> **To start after install:** reboot → log in via the display manager. If you installed Cinnamon, select **Niri** from the session menu (gear/cog icon at the login screen). Otherwise Niri will be the only session and will start automatically.
 >
 > **First boot:** Noctalia may not appear the first time you run Niri. Log back out, select Niri again — it will start correctly.
 
