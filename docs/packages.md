@@ -27,11 +27,29 @@ sudo dnf install -y --nogpgcheck \
   terra-release
 ```
 
+## Display Manager (always installed)
+
+```bash
+sudo dnf install -y lightdm lightdm-gtk-greeter
+sudo systemctl set-default graphical.target
+sudo systemctl enable lightdm
+```
+
+Runs after the optional Cinnamon phase so lightdm is always present — Cinnamon provides it when installed, but this ensures it's there when Cinnamon is skipped.
+
+To remove lightdm after install for a minimal TTY-only setup:
+
+```bash
+sudo dnf remove lightdm lightdm-gtk-greeter
+sudo systemctl set-default multi-user.target
+```
+
+Start niri manually from TTY with `niri-session`.
+
 ## Core Install
 
 ```bash
 sudo dnf install -y --exclude=power-profiles-daemon --skip-broken \
-  lightdm-gtk-greeter \
   niri \
   noctalia-shell \
   brightnessctl \

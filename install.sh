@@ -435,6 +435,33 @@ install_noctalia_polkit() {
     rm -rf "${TMP_DIR}"
 
     success "Noctalia polkit-agent installed to ${POLKIT_DEST}"
+
+    # Enable the plugin in plugins.json — Noctalia defaults it to disabled.
+    # If Noctalia overwrites this on first launch the user will need to enable manually.
+    PLUGINS_JSON="${SCRIPT_HOME}/.config/noctalia/plugins.json"
+    if [[ ! -f "${PLUGINS_JSON}" ]]; then
+        cat > "${PLUGINS_JSON}" << 'EOF'
+{
+    "sources": [
+        {
+            "enabled": true,
+            "name": "Noctalia Plugins",
+            "url": "https://github.com/noctalia-dev/noctalia-plugins"
+        }
+    ],
+    "states": {
+        "polkit-agent": {
+            "enabled": true,
+            "sourceUrl": "https://github.com/noctalia-dev/noctalia-plugins"
+        }
+    },
+    "version": 2
+}
+EOF
+        success "Noctalia plugins.json written with polkit-agent enabled."
+    else
+        info "plugins.json already exists — skipping. Enable polkit-agent manually if needed."
+    fi
 }
 
 # ─────────────────────────────────────────────

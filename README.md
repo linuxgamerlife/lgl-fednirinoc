@@ -96,6 +96,17 @@ Both default to skip — press Enter to pass.
 
 The install script configures the GTK portal as the FileChooser handler. If the file picker still doesn't work in Firefox, in `about:config` set `widget.use-xdg-desktop-portal.file-picker` to `0` to use the native GTK file picker as a fallback.
 
+## Removing lightdm for a minimal install
+
+If you want to go back to a TTY-only setup after install:
+
+```bash
+sudo dnf remove lightdm lightdm-gtk-greeter
+sudo systemctl set-default multi-user.target
+```
+
+Then start niri manually from TTY with `niri-session`.
+
 ## Known Issues
 
 | Issue | Status | Workaround |

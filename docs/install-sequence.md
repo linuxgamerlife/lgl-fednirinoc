@@ -167,6 +167,29 @@ Write `~/.config/autostart/fednirinoc-gtk-theme.desktop` — fires once on first
 
 Sparse-clone `polkit-agent` from [noctalia-dev/noctalia-plugins](https://github.com/noctalia-dev/noctalia-plugins) into `~/.config/noctalia/plugins/polkit-agent`. Idempotent — skipped if directory already exists.
 
+Also writes `~/.config/noctalia/plugins.json` with the plugin enabled (skipped if the file already exists):
+
+```json
+{
+    "sources": [
+        {
+            "enabled": true,
+            "name": "Noctalia Plugins",
+            "url": "https://github.com/noctalia-dev/noctalia-plugins"
+        }
+    ],
+    "states": {
+        "polkit-agent": {
+            "enabled": true,
+            "sourceUrl": "https://github.com/noctalia-dev/noctalia-plugins"
+        }
+    },
+    "version": 2
+}
+```
+
+> If Noctalia overwrites `plugins.json` on first launch, enable the polkit-agent manually via the Noctalia plugin manager.
+
 ## Phase 10: Optional LGL Tools
 
 Script prompts to install LGL System Loadout and/or LGL SCX Scheduler Manager — both default to skip.
@@ -186,6 +209,17 @@ niri msg outputs
 # Uncomment and fill the OUTPUT CONFIGURATION section
 # scale must be float (e.g. 1.0)
 ```
+
+## Removing lightdm for a minimal install
+
+If you want a TTY-only setup after install, remove lightdm and revert the default target:
+
+```bash
+sudo dnf remove lightdm lightdm-gtk-greeter
+sudo systemctl set-default multi-user.target
+```
+
+Start niri manually from TTY with `niri-session`.
 
 ## Known Issues
 
