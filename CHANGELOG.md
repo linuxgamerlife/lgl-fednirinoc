@@ -21,6 +21,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - `ensure_display_manager()` phase (Phase 1b) — always installs `lightdm` + `lightdm-gtk-greeter`, sets `graphical.target`, and enables `lightdm`. Runs after optional Cinnamon install so lightdm is present even when Cinnamon is skipped.
 - `install_noctalia_polkit()` phase — sparse-clones `polkit-agent` from [noctalia-dev/noctalia-plugins](https://github.com/noctalia-dev/noctalia-plugins) into `~/.config/noctalia/plugins/polkit-agent`. Also writes `~/.config/noctalia/plugins.json` with polkit-agent enabled (skipped if file already exists). Idempotent.
 - `qt5ct` added to package install — Qt5 app theming
+- `gnome-keyring` and `gnome-menus` added back to explicit package install — ensures they are present when Cinnamon is skipped (PipeWire omitted as it ships with Fedora minimal regardless)
 
 ### Changed
 - Niri config append: stripped down to `dbus-update-activation-environment --systemd --all` + `qs -c noctalia-shell` only. Removed Qt env block, xwayland-satellite spawn, polkit-gnome spawn.

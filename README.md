@@ -21,7 +21,7 @@ A post-install bash script that sets up [niri](https://github.com/niri-wm/niri) 
 
 Fedora Everything (minimal) → run `install.sh` → reboot → DM login → select Niri or Cinnamon session
 
-lightdm is always installed as the display manager. Cinnamon Desktop is optional — install it to get PipeWire, polkit, gnome-keyring, and a full GTK environment, or skip it if you already have a desktop environment installed. Niri + Noctalia sit on top as a selectable DM session.
+lightdm is always installed as the display manager. Cinnamon Desktop is optional — install it to get a full GTK environment and PipeWire stack, or skip it if you already have a desktop environment installed. Niri + Noctalia sit on top as a selectable DM session.
 
 ## Install
 

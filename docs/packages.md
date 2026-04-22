@@ -8,12 +8,14 @@ sudo dnf5 group install -y cinnamon-desktop
 
 Installed first. Provides the display manager, PipeWire stack, polkit agent (for Cinnamon session), and core GTK environment. Niri/Noctalia layer on top — Cinnamon session remains available as a fallback.
 
-**Provided by this group (not installed separately):**
+**Provided by this group (when installed):**
 - `lightdm` — display manager / greeter
-- `pipewire` + `pipewire-pulse` + `wireplumber` — audio and screen share
+- `pipewire` + `pipewire-pulse` + `wireplumber` — audio and screen share (also ships with Fedora minimal)
 - `gnome-keyring` — secret storage
 - `gnome-menus` — `applications.menu` for KDE app discovery
 - `mate-polkit` — polkit auth agent for the Cinnamon session; not used by the niri session (Noctalia polkit plugin handles polkit there)
+
+`gnome-keyring` and `gnome-menus` are also explicitly installed in the core package phase so they are present even when Cinnamon is skipped.
 
 ## Repos
 
@@ -99,7 +101,6 @@ cp -r /tmp/noctalia-plugins/polkit-agent ~/.config/noctalia/plugins/polkit-agent
 
 - `power-profiles-daemon` — conflicts with `tuned-ppd`, which ships as part of `tuned` (installed by default on Fedora). Excluded via `--exclude=power-profiles-daemon`
 - `xwayland-satellite` — built into niri as of 25.08; no longer a separate package
-- `pipewire` / `wireplumber` / `gnome-keyring` / `gnome-menus` — provided by the Cinnamon Desktop group
 - `waybar` — not needed, Noctalia provides the bar
 - `mako` — not needed, Noctalia handles notifications
 - `swaybg` / `wlsunset` — not needed, Noctalia handles wallpaper and night light

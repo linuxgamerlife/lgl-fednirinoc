@@ -215,6 +215,10 @@ install_packages() {
         qt6ct
         qt5ct
 
+        # Provided by Cinnamon group if installed, explicitly included for non-Cinnamon installs
+        gnome-keyring
+        gnome-menus
+
         # Optional but integrated by Noctalia
         cliphist
         # power-profiles-daemon conflicts with tuned-ppd on Fedora minimal

@@ -78,7 +78,8 @@ sudo dnf install -y --exclude=power-profiles-daemon --skip-broken \
 
 > `power-profiles-daemon` excluded — conflicts with `tuned-ppd` on Fedora minimal.
 > `xwayland-satellite` omitted — built into niri as of 25.08.
-> `pipewire`, `wireplumber`, `gnome-keyring`, `gnome-menus`, `mate-polkit` omitted — provided by Cinnamon group.
+> `gnome-keyring` and `gnome-menus` explicitly installed — ensures they are present when Cinnamon is skipped.
+> `mate-polkit` omitted — provided by Cinnamon group; not used by the niri session.
 
 ## Phase 4: Niri Session File
 
