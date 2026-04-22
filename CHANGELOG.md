@@ -17,6 +17,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [0.3.0] - 2026-04-22
 
 ### Added
+- `configure_dnf()` phase (Phase 0) — prompts for `installonly_limit` and `max_parallel_downloads`, updates `/etc/dnf/dnf.conf`. Warns that high values can cause instability; defaults are 3 and 5. Empty or non-numeric input falls back to defaults.
+- `ensure_display_manager()` phase (Phase 1b) — always installs `lightdm` + `lightdm-gtk-greeter`, sets `graphical.target`, and enables `lightdm`. Runs after optional Cinnamon install so lightdm is present even when Cinnamon is skipped.
 - `install_noctalia_polkit()` phase — sparse-clones `polkit-agent` from [noctalia-dev/noctalia-plugins](https://github.com/noctalia-dev/noctalia-plugins) into `~/.config/noctalia/plugins/polkit-agent`. Idempotent.
 - `qt5ct` added to package install — Qt5 app theming
 

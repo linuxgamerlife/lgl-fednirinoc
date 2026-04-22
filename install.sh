@@ -54,6 +54,48 @@ ask_cinnamon() {
 }
 
 # ─────────────────────────────────────────────
+# Phase 0: DNF configuration
+# ─────────────────────────────────────────────
+
+configure_dnf() {
+    echo ""
+    echo "  ----------------------------------------------------------------"
+    echo "          DNF Configuration"
+    echo "  ----------------------------------------------------------------"
+    echo "  installonly_limit  — max versions of install-only packages kept"
+    echo "                       (e.g. kernel versions retained after upgrades)"
+    echo "  max_parallel_downloads — concurrent package downloads"
+    echo ""
+    echo "  WARNING: Setting these values too high can cause instability."
+    echo "  Defaults are 3 and 5. Press Enter to keep defaults."
+    echo "  ----------------------------------------------------------------"
+    echo ""
+
+    read -rp "  installonly_limit [3]: " dnf_installonly
+    read -rp "  max_parallel_downloads [5]: " dnf_parallel
+
+    # Fall back to defaults if empty or non-numeric
+    [[ "${dnf_installonly}" =~ ^[0-9]+$ ]] || dnf_installonly=3
+    [[ "${dnf_parallel}" =~ ^[0-9]+$ ]]    || dnf_parallel=5
+
+    DNF_CONF="/etc/dnf/dnf.conf"
+
+    if grep -q "^installonly_limit=" "${DNF_CONF}" 2>/dev/null; then
+        sudo sed -i "s/^installonly_limit=.*/installonly_limit=${dnf_installonly}/" "${DNF_CONF}"
+    else
+        echo "installonly_limit=${dnf_installonly}" | sudo tee -a "${DNF_CONF}" > /dev/null
+    fi
+
+    if grep -q "^max_parallel_downloads=" "${DNF_CONF}" 2>/dev/null; then
+        sudo sed -i "s/^max_parallel_downloads=.*/max_parallel_downloads=${dnf_parallel}/" "${DNF_CONF}"
+    else
+        echo "max_parallel_downloads=${dnf_parallel}" | sudo tee -a "${DNF_CONF}" > /dev/null
+    fi
+
+    success "DNF config updated (installonly_limit=${dnf_installonly}, max_parallel_downloads=${dnf_parallel})"
+}
+
+# ─────────────────────────────────────────────
 # Preflight checks
 # ─────────────────────────────────────────────
 
@@ -98,10 +140,23 @@ install_cinnamon() {
 
     sudo dnf5 group install -y cinnamon-desktop
 
+    success "Cinnamon Desktop group installed."
+}
+
+# ─────────────────────────────────────────────
+# Phase 1b: Display manager (always runs)
+# ─────────────────────────────────────────────
+
+ensure_display_manager() {
+    info "Ensuring lightdm and GTK greeter are installed..."
+
+    sudo dnf install -y lightdm lightdm-gtk-greeter
+
     sudo systemctl set-default graphical.target
     success "Default target set to graphical.target."
 
-    success "Cinnamon Desktop group installed."
+    sudo systemctl enable lightdm
+    success "lightdm enabled."
 }
 
 # ─────────────────────────────────────────────
@@ -497,9 +552,11 @@ main() {
 
     ask_cinnamon
     preflight
+    configure_dnf
     if [[ "${INSTALL_CINNAMON}" == "true" ]]; then
         install_cinnamon
     fi
+    ensure_display_manager
     setup_repos
     install_packages
     ensure_niri_session_file

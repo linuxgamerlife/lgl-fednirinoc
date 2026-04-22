@@ -2,18 +2,48 @@
 
 Assumes: Fedora minimal install, boots to TTY, internet connected, logged in as regular user with sudo.
 
+## Phase 0: DNF Configuration
+
+Prompts for two DNF settings before anything is installed. Press Enter to keep defaults.
+
+```
+installonly_limit      — max versions of install-only packages kept (default: 3)
+max_parallel_downloads — concurrent package downloads (default: 5)
+```
+
+> **Warning:** Setting these values too high can cause instability. Defaults are recommended.
+
+Updates `/etc/dnf/dnf.conf` under `[main]` — edits existing keys or appends if absent:
+
+```ini
+[main]
+installonly_limit=3
+max_parallel_downloads=5
+```
+
+Non-numeric or empty input silently falls back to the default.
+
 ## Phase 1: Cinnamon Desktop Group (optional)
 
 The script prompts before this phase. Answer `n` to skip if you already have a desktop environment installed.
 
 ```bash
 sudo dnf5 group install -y cinnamon-desktop
-sudo systemctl set-default graphical.target
 ```
 
-Provides: lightdm (display manager), PipeWire + WirePlumber, polkit agent, gnome-keyring, gnome-menus, GTK environment. Niri + Noctalia layer on top as a selectable DM session.
+Provides: lightdm, PipeWire + WirePlumber, polkit agent, gnome-keyring, gnome-menus, GTK environment. Niri + Noctalia layer on top as a selectable DM session.
 
-> Fedora minimal defaults to `multi-user.target` — `set-default graphical.target` is required or the display manager won't start on reboot. Skipped automatically when Cinnamon install is declined.
+## Phase 1b: Display Manager (always runs)
+
+Ensures lightdm and the GTK greeter are present regardless of whether Cinnamon was installed, then enables the service and sets the default target:
+
+```bash
+sudo dnf install -y lightdm lightdm-gtk-greeter
+sudo systemctl set-default graphical.target
+sudo systemctl enable lightdm
+```
+
+> Fedora minimal defaults to `multi-user.target` — `set-default graphical.target` is required or lightdm won't start on reboot.
 
 ## Phase 2: Repos
 
@@ -31,7 +61,6 @@ sudo dnf install -y --nogpgcheck \
 
 ```bash
 sudo dnf install -y --exclude=power-profiles-daemon --skip-broken \
-  lightdm-gtk-greeter \
   niri \
   noctalia-shell \
   brightnessctl \
@@ -141,6 +170,10 @@ Sparse-clone `polkit-agent` from [noctalia-dev/noctalia-plugins](https://github.
 ## Phase 10: Optional LGL Tools
 
 Script prompts to install LGL System Loadout and/or LGL SCX Scheduler Manager — both default to skip.
+
+## Phase 11: Post-Install Banner
+
+Prints display config instructions and a reboot prompt.
 
 ## Post-Install
 

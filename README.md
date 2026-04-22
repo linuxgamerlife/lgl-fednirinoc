@@ -39,17 +39,19 @@ chmod +x install.sh
 
 ## What it does
 
-1. Prompts whether to install Cinnamon Desktop group — skip if you already have a DE installed
-2. Enables repos (avengemedia/danklinux COPR + terra)
-3. Installs niri, Noctalia, and required deps
-4. Ensures `/usr/share/wayland-sessions/niri.desktop` exists so lightdm offers the Niri session
-5. Appends Noctalia startup config to `~/.config/niri/config.kdl`
-6. Writes xdg-portal config
-7. Sets Qt theme env var in `/etc/environment` (system-wide, covers polkit dialogs)
-8. Registers a one-shot autostart to apply dark mode GTK theme on first login
-9. Installs Noctalia polkit agent plugin to `~/.config/noctalia/plugins/polkit-agent`
-10. Optionally installs LGL System Loadout and/or LGL SCX Scheduler Manager
-11. Prints post-install instructions
+1. Prompts for DNF settings (`installonly_limit`, `max_parallel_downloads`) and updates `/etc/dnf/dnf.conf`
+2. Prompts whether to install Cinnamon Desktop group — skip if you already have a DE installed
+3. Installs and enables lightdm + lightdm-gtk-greeter (always, regardless of Cinnamon choice)
+4. Enables repos (avengemedia/danklinux COPR + terra)
+5. Installs niri, Noctalia, and required deps
+6. Ensures `/usr/share/wayland-sessions/niri.desktop` exists so lightdm offers the Niri session
+7. Appends Noctalia startup config to `~/.config/niri/config.kdl`
+8. Writes xdg-portal config
+9. Sets Qt theme env var in `/etc/environment` (system-wide, covers polkit dialogs)
+10. Registers a one-shot autostart to apply dark mode GTK theme on first login
+11. Installs Noctalia polkit agent plugin to `~/.config/noctalia/plugins/polkit-agent`
+12. Optionally installs LGL System Loadout and/or LGL SCX Scheduler Manager
+13. Prints post-install instructions
 
 ## What Noctalia handles
 
