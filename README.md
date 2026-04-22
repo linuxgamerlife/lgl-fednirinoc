@@ -9,7 +9,7 @@ A post-install bash script that sets up [niri](https://github.com/niri-wm/niri) 
 >
 > **VM requirements:** GPU acceleration must be enabled with OpenGL support (e.g. VirtIO GPU + 3D acceleration in QEMU/KVM). Without this niri will not start.
 >
-> **Terminal:** Alacritty is installed by default. Install any additional terminal emulators before rebooting.
+> **Terminal:** Alacritty is installed. You will need to install any other apps. Additional app decisions have not been made for you.
 >
 > **To start after install:** reboot → log in via the display manager → select **Niri** from the session menu (gear/cog icon at the login screen).
 >
