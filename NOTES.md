@@ -43,17 +43,21 @@ Reboot → log in at DM → select **Niri** session from session picker (gear/co
 - External deps: brightnessctl, ImageMagick, python3, git, cliphist
 
 # Polkit
-- mate-polkit installed by Cinnamon Desktop group — provides polkit-gnome-authentication-agent-1 (replaces polkit-gnome removed in F41+)
-- Both Cinnamon and niri sessions use the same binary: /usr/libexec/polkit-gnome-authentication-agent-1
-- Niri session spawns it explicitly via spawn-at-startup in config.kdl
+- Use Noctalia Polkit to keep in style with the theme. NEEDS TO BE ADDED SEE BELOW
 
-# Xwayland
-- xwayland-satellite spawned via spawn-at-startup in config.kdl
-- Required for X11/game compatibility
+# Xwayland-satellite no longer needs to be added as it's built into Niri as of 25.08 
+- Needs to be removed frome script  >> xwayland-satellite spawned via spawn-at-startup in config.kdl- Required for X11/game compatibility
 
 # Known Issues
 - power-profiles-daemon conflicts with tuned-ppd — exclude from dnf install
-- Screencasting portal conflict (niri #2399) — document only, no fix
-- Suspend → red screen on niri+Fedora — known GPU bug
 - Display output config requires niri running — manual post-install step
 - KDL syntax: scale must be float (1.0 not 1), strings need closing quotes
+
+# To add Noctalia polkit once ins
+
+```git clone --no-checkout --depth=1 --filter=blob:none https://github.com/noctalia-dev/noctalia-plugins.git
+cd noctalia-plugins
+git sparse-checkout set polkit-agent
+git checkout```
+
+destination needs to be placed in ~/.config/noctalia/plugins/ which might need to be created

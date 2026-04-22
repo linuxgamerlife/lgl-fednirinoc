@@ -40,13 +40,7 @@ output "eDP-1" {
 
 ## Xwayland
 
-xwayland-satellite must be explicitly spawned in config.kdl for X11/game compatibility:
-
-```kdl
-spawn-at-startup "xwayland-satellite"
-```
-
-niri auto-integrates it (handles the socket), but the process still needs to be running. Confirmed required for gaming.
+Xwayland support is built into niri as of 25.08 — no separate `xwayland-satellite` package or spawn required.
 
 ## Noctalia Required Settings
 
@@ -102,17 +96,11 @@ overview {
 
 `adwaita-qt` and `adwaita-qt6` dropped from Fedora 39+. Use `qt6ct` instead.
 
-Set env var in niri config block:
+`QT_QPA_PLATFORMTHEME=qt6ct` is set system-wide in `/etc/environment` by the install script — no niri config block needed.
 
-```kdl
-environment {
-    QT_QPA_PLATFORMTHEME "qt6ct"
-}
-```
+After first login, run `qt6ct` to apply the Noctalia color scheme: **Settings → Color Scheme → Templates → enable Qt**.
 
-After first login, run `qt6ct` and apply the Noctalia color scheme: **Settings → Color Scheme → Templates → enable Qt**.
-
-Qt5 apps won't pick up `qt6ct` — they need `qt5ct`. Since only one value can be set globally, run specific Qt5 apps with the var overridden: `QT_QPA_PLATFORMTHEME=qt5ct <app>`. Install `qt5ct` first if needed.
+Qt5 apps use `qt5ct` — both are installed by the script. Run `qt5ct` to configure Qt5 theming separately.
 
 Noctalia (Quickshell/QML) is unaffected — styles itself independently.
 
@@ -147,10 +135,7 @@ spawn-at-startup "qs" "-c" "noctalia-shell"
 
 **Do NOT** also enable `noctalia.service` via systemd if using spawn-at-startup — two instances will launch. Pick one method. spawn-at-startup is simpler; systemd is more robust. Recommended: spawn-at-startup for now.
 
-**polkit** — `mate-polkit` (installed by Cinnamon Desktop group) provides `polkit-gnome-authentication-agent-1`. Spawned via spawn-at-startup in the niri session:
-```kdl
-spawn-at-startup "/usr/libexec/polkit-gnome-authentication-agent-1"
-```
+**polkit** — handled by the Noctalia polkit plugin installed to `~/.config/noctalia/plugins/polkit-agent`. No spawn-at-startup entry needed — Noctalia manages it.
 
 ## Portal Config
 

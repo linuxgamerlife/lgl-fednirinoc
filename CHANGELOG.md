@@ -8,12 +8,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-### Added
-- Cinnamon Desktop install is now optional — script prompts at startup, defaulting to `Y`. Answer `n` to skip if a DE is already installed. Rest of the script continues unchanged.
-
 ### Planned
 - Live hardware testing
 - GTK3 graphical installer app (future)
+
+---
+
+## [0.3.0] - 2026-04-22
+
+### Added
+- `install_noctalia_polkit()` phase — sparse-clones `polkit-agent` from [noctalia-dev/noctalia-plugins](https://github.com/noctalia-dev/noctalia-plugins) into `~/.config/noctalia/plugins/polkit-agent`. Idempotent.
+- `qt5ct` added to package install — Qt5 app theming
+
+### Changed
+- Niri config append: stripped down to `dbus-update-activation-environment --systemd --all` + `qs -c noctalia-shell` only. Removed Qt env block, xwayland-satellite spawn, polkit-gnome spawn.
+
+### Removed
+- `xwayland-satellite` from package install — built into niri as of 25.08
+- `xwayland-satellite` version check from preflight
+- `spawn-at-startup "xwayland-satellite"` from niri config append
+- `spawn-at-startup "/usr/libexec/polkit-gnome-authentication-agent-1"` from niri config append — replaced by Noctalia polkit plugin
+- `environment { QT_QPA_PLATFORMTHEME "qt6ct" }` from niri config append — `/etc/environment` handles this system-wide
 
 ---
 
@@ -90,6 +105,7 @@ Initial release. Research-based bash script, partially tested in VM.
 ### Not included (Noctalia handles)
 - Wallpaper, notifications, lock screen, night light, status bar, app launcher
 
+[0.3.0]: https://github.com/linuxgamerlife/lgl-fednirinoc/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/linuxgamerlife/lgl-fednirinoc/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/linuxgamerlife/lgl-fednirinoc/compare/v0.0.2...v0.1.0
 [0.0.2]: https://github.com/linuxgamerlife/lgl-fednirinoc/compare/v0.0.1...v0.0.2

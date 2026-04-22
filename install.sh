@@ -1,5 +1,5 @@
 #!/bin/bash
-# fednirinoc v0.2.0
+# fednirinoc v0.3.0
 # Post-install script: Fedora minimal TTY -> Cinnamon + niri + Noctalia
 # Installs Cinnamon Desktop group first (provides DM, PipeWire, polkit, GTK env),
 # then layers niri + Noctalia on top as a selectable session in lightdm.
@@ -77,17 +77,6 @@ preflight() {
         die "This script is for Fedora only."
     fi
 
-    # xwayland-satellite version check
-    if command -v xwayland-satellite &>/dev/null; then
-        XWS_VER=$(xwayland-satellite --version 2>&1 | grep -oP '\d+\.\d+' | head -1)
-        XWS_MAJOR=$(echo "$XWS_VER" | cut -d. -f1)
-        XWS_MINOR=$(echo "$XWS_VER" | cut -d. -f2)
-        if [[ "$XWS_MAJOR" -eq 0 && "$XWS_MINOR" -lt 7 ]]; then
-            warn "xwayland-satellite ${XWS_VER} found — need >= 0.7 for niri auto-integration."
-            warn "Will install/upgrade from repos."
-        fi
-    fi
-
     # adw-gtk3-theme package name check
     if ! sudo dnf info adw-gtk3-theme &>/dev/null; then
         warn "adw-gtk3-theme not found in repos. GTK theming step will be skipped."
@@ -152,9 +141,8 @@ install_packages() {
     info "Installing packages..."
 
     PACKAGES=(
-        # Core compositor + xwayland
+        # Core compositor
         niri
-        xwayland-satellite
 
         # Noctalia shell + runtime deps
         noctalia-shell
@@ -168,9 +156,9 @@ install_packages() {
         xdg-desktop-portal-gtk
         xdg-desktop-portal-gnome
 
-        # Qt theming (qt6ct — config tool for Qt6 apps; adwaita-qt/adwaita-qt6 dropped F39+)
+        # Qt theming (adwaita-qt/adwaita-qt6 dropped F39+)
         qt6ct
-        # qt5ct  # uncomment if you have Qt5 apps that don't honour the Qt6 theme
+        qt5ct
 
         # Optional but integrated by Noctalia
         cliphist
@@ -256,23 +244,14 @@ configure_niri() {
     cat >> "${NIRI_CONFIG}" << 'EOF'
 
 // ---------------------------------------------
-// fednirinoc -- appended by install.sh v0.2.0
+// fednirinoc -- appended by install.sh v0.3.0
 // ---------------------------------------------
 
-// Qt theming — qt6ct reads ~/.config/qt6ct/qt6ct.conf (configure via: qt6ct)
-// Qt5 apps won't pick this up — run them with: QT_QPA_PLATFORMTHEME=qt5ct <app>
-environment {
-    QT_QPA_PLATFORMTHEME "qt6ct"
-}
+// Updates the D-Bus and systemd user environment
+spawn-at-startup "dbus-update-activation-environment" "--systemd" "--all"
 
 // Noctalia shell
 spawn-at-startup "qs" "-c" "noctalia-shell"
-
-// Xwayland (required for X11/game compatibility)
-spawn-at-startup "xwayland-satellite"
-
-// Polkit agent — mate-polkit installed by Cinnamon Desktop group, provides polkit-gnome-authentication-agent-1
-spawn-at-startup "/usr/libexec/polkit-gnome-authentication-agent-1"
 
 // Uncomment if apps fail to focus when launched via Noctalia
 // debug {
@@ -375,7 +354,36 @@ EOF
 }
 
 # ─────────────────────────────────────────────
-# Phase 9: Optional LGL tools
+# Phase 9: Noctalia polkit agent
+# ─────────────────────────────────────────────
+
+install_noctalia_polkit() {
+    info "Installing Noctalia polkit agent..."
+
+    NOCTALIA_PLUGINS_DIR="${SCRIPT_HOME}/.config/noctalia/plugins"
+    POLKIT_DEST="${NOCTALIA_PLUGINS_DIR}/polkit-agent"
+
+    if [[ -d "${POLKIT_DEST}" ]]; then
+        info "Noctalia polkit-agent already installed — skipping."
+        return
+    fi
+
+    mkdir -p "${NOCTALIA_PLUGINS_DIR}"
+
+    TMP_DIR=$(mktemp -d)
+    git clone --no-checkout --depth=1 --filter=blob:none \
+        https://github.com/noctalia-dev/noctalia-plugins.git "${TMP_DIR}"
+    git -C "${TMP_DIR}" sparse-checkout set polkit-agent
+    git -C "${TMP_DIR}" checkout
+
+    cp -r "${TMP_DIR}/polkit-agent" "${POLKIT_DEST}"
+    rm -rf "${TMP_DIR}"
+
+    success "Noctalia polkit-agent installed to ${POLKIT_DEST}"
+}
+
+# ─────────────────────────────────────────────
+# Phase 10: Optional LGL tools
 # ─────────────────────────────────────────────
 
 offer_lgl_tools() {
@@ -431,13 +439,13 @@ offer_lgl_tools() {
 }
 
 # ─────────────────────────────────────────────
-# Phase 10: Post-install banner + reboot prompt
+# Phase 11: Post-install banner + reboot prompt
 # ─────────────────────────────────────────────
 
 display_banner() {
     echo ""
     echo "================================================================"
-    echo "  fednirinoc v0.2.0 -- Install Complete"
+    echo "  fednirinoc v0.3.0 -- Install Complete"
     echo "================================================================"
     echo ""
     echo "  TO START:"
@@ -483,7 +491,7 @@ display_banner() {
 
 main() {
     echo ""
-    echo "  fednirinoc v0.2.0 -- Fedora minimal -> Cinnamon + niri + Noctalia"
+    echo "  fednirinoc v0.3.0 -- Fedora minimal -> Cinnamon + niri + Noctalia"
     echo "  ------------------------------------------------------------------"
     echo ""
 
@@ -499,6 +507,7 @@ main() {
     configure_portals
     configure_system_env
     configure_gtk_theme
+    install_noctalia_polkit
     offer_lgl_tools
     display_banner
 }

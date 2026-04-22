@@ -47,8 +47,9 @@ chmod +x install.sh
 6. Writes xdg-portal config
 7. Sets Qt theme env var in `/etc/environment` (system-wide, covers polkit dialogs)
 8. Registers a one-shot autostart to apply dark mode GTK theme on first login
-9. Optionally installs LGL System Loadout and/or LGL SCX Scheduler Manager
-10. Prints post-install instructions
+9. Installs Noctalia polkit agent plugin to `~/.config/noctalia/plugins/polkit-agent`
+10. Optionally installs LGL System Loadout and/or LGL SCX Scheduler Manager
+11. Prints post-install instructions
 
 ## What Noctalia handles
 
@@ -69,7 +70,7 @@ Reboot, then at the login screen select the **Niri** session from the session pi
 
 On first login, a one-shot autostart applies dark mode GTK theme automatically, then removes itself.
 
-Run `qt6ct` to configure Qt app theming (apply the Noctalia color scheme).
+Run `qt6ct` to configure Qt6 app theming and `qt5ct` for Qt5 apps (apply the Noctalia color scheme).
 
 Display config (run inside niri after first launch):
 ```bash

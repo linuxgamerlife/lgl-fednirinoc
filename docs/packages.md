@@ -31,8 +31,8 @@ sudo dnf install -y --nogpgcheck \
 
 ```bash
 sudo dnf install -y --exclude=power-profiles-daemon --skip-broken \
+  lightdm-gtk-greeter \
   niri \
-  xwayland-satellite \
   noctalia-shell \
   brightnessctl \
   ImageMagick \
@@ -41,35 +41,46 @@ sudo dnf install -y --exclude=power-profiles-daemon --skip-broken \
   xdg-desktop-portal \
   xdg-desktop-portal-gtk \
   xdg-desktop-portal-gnome \
-  lxqt-policykit \
   qt6ct \
+  qt5ct \
   cliphist
   # adw-gtk3-theme  # added automatically if available in repos
-  # qt5ct  # uncomment for Qt5 app theming
+```
+
+## Noctalia Polkit Plugin
+
+Installed via sparse-checkout (not a dnf package):
+
+```bash
+git clone --no-checkout --depth=1 --filter=blob:none \
+  https://github.com/noctalia-dev/noctalia-plugins.git /tmp/noctalia-plugins
+git -C /tmp/noctalia-plugins sparse-checkout set polkit-agent
+git -C /tmp/noctalia-plugins checkout
+cp -r /tmp/noctalia-plugins/polkit-agent ~/.config/noctalia/plugins/polkit-agent
 ```
 
 ## Package Notes
 
 | Package | Reason |
 |---|---|
+| `lightdm-gtk-greeter` | GTK login screen for lightdm — not always pulled in by the Cinnamon group |
 | `niri` | Wayland compositor — from avengemedia/danklinux COPR |
-| `xwayland-satellite` | X11 compatibility for games/legacy apps |
 | `noctalia-shell` | Full desktop shell — bar, launcher, notifications, wallpaper, lock screen |
 | `brightnessctl` | Screen brightness — Noctalia dep |
 | `ImageMagick` | Image processing — Noctalia dep |
 | `python3` | Noctalia dep |
-| `git` | Noctalia dep |
+| `git` | Noctalia dep; also used to install Noctalia polkit plugin |
 | `xdg-desktop-portal-gnome` | Screencasting support |
 | `xdg-desktop-portal-gtk` | File picker |
-| `mate-polkit` | Polkit auth agent — provided by Cinnamon Desktop group; provides `polkit-gnome-authentication-agent-1` binary used by both Cinnamon and niri sessions |
 | `cliphist` | Clipboard history — Noctalia integrates directly |
 | `adw-gtk3-theme` | GTK theme for GTK apps running under niri |
-| `qt6ct` | Qt6 theme config tool — set style/palette for Qt6 apps (`adwaita-qt`/`adwaita-qt6` dropped F39+) |
-| `qt5ct` | Optional — same for Qt5 apps if needed |
+| `qt6ct` | Qt6 theme config tool (`adwaita-qt`/`adwaita-qt6` dropped F39+) |
+| `qt5ct` | Qt5 theme config tool — same as qt6ct for Qt5 apps |
 
 ## Exclusions
 
 - `power-profiles-daemon` — conflicts with `tuned-ppd`, which ships as part of `tuned` (installed by default on Fedora). Excluded via `--exclude=power-profiles-daemon`
+- `xwayland-satellite` — built into niri as of 25.08; no longer a separate package
 - `pipewire` / `wireplumber` / `gnome-keyring` / `gnome-menus` — provided by the Cinnamon Desktop group
 - `waybar` — not needed, Noctalia provides the bar
 - `mako` — not needed, Noctalia handles notifications

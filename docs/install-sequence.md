@@ -31,8 +31,8 @@ sudo dnf install -y --nogpgcheck \
 
 ```bash
 sudo dnf install -y --exclude=power-profiles-daemon --skip-broken \
+  lightdm-gtk-greeter \
   niri \
-  xwayland-satellite \
   noctalia-shell \
   brightnessctl \
   ImageMagick \
@@ -42,11 +42,13 @@ sudo dnf install -y --exclude=power-profiles-daemon --skip-broken \
   xdg-desktop-portal-gtk \
   xdg-desktop-portal-gnome \
   qt6ct \
+  qt5ct \
   cliphist \
   adw-gtk3-theme
 ```
 
 > `power-profiles-daemon` excluded — conflicts with `tuned-ppd` on Fedora minimal.
+> `xwayland-satellite` omitted — built into niri as of 25.08.
 > `pipewire`, `wireplumber`, `gnome-keyring`, `gnome-menus`, `mate-polkit` omitted — provided by Cinnamon group.
 
 ## Phase 4: Niri Session File
@@ -76,13 +78,15 @@ This is what makes lightdm offer Niri as a selectable session.
 
 Appended block:
 ```kdl
-// fednirinoc — appended by install.sh
-environment {
-    QT_QPA_PLATFORMTHEME "qt6ct"
-}
+// ---------------------------------------------
+// fednirinoc -- appended by install.sh v0.3.0
+// ---------------------------------------------
+
+// Updates the D-Bus and systemd user environment
+spawn-at-startup "dbus-update-activation-environment" "--systemd" "--all"
+
+// Noctalia shell
 spawn-at-startup "qs" "-c" "noctalia-shell"
-spawn-at-startup "xwayland-satellite"
-spawn-at-startup "/usr/libexec/polkit-gnome-authentication-agent-1"
 
 // Uncomment if apps fail to focus when launched via Noctalia
 // debug {
@@ -91,9 +95,10 @@ spawn-at-startup "/usr/libexec/polkit-gnome-authentication-agent-1"
 
 // OUTPUT CONFIGURATION
 // After first login run: niri msg outputs
-// Note your output name and mode, then uncomment and edit below:
+// Note your output name and mode, then uncomment and edit below, then:
+//   niri msg action quit
 //
-// output "eDP-1" {
+// output "Virtual-1" {
 //     mode "1920x1080@60.000"
 //     scale 1.0
 //     transform "normal"
@@ -128,6 +133,14 @@ echo 'QT_QPA_PLATFORMTHEME=qt6ct' | sudo tee -a /etc/environment
 ## Phase 8: GTK Theme Autostart
 
 Write `~/.config/autostart/fednirinoc-gtk-theme.desktop` — fires once on first login, sets dark mode via gsettings, then deletes itself.
+
+## Phase 9: Noctalia Polkit Agent
+
+Sparse-clone `polkit-agent` from [noctalia-dev/noctalia-plugins](https://github.com/noctalia-dev/noctalia-plugins) into `~/.config/noctalia/plugins/polkit-agent`. Idempotent — skipped if directory already exists.
+
+## Phase 10: Optional LGL Tools
+
+Script prompts to install LGL System Loadout and/or LGL SCX Scheduler Manager — both default to skip.
 
 ## Post-Install
 

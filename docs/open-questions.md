@@ -14,16 +14,16 @@
 - Does `--nogpgcheck` still required or is a GPG key now available for terra?
 - Confirm `$releasever` expands correctly on current Fedora version
 
-## lxqt-policykit
-
-- Confirm binary path is `/usr/libexec/lxqt-policykit-agent` on Fedora (not `/usr/bin/`)
-- Confirm package name is `lxqt-policykit` in Fedora repos
-
 ## Niri COPR Package
 
 - Does `avengemedia/danklinux` ship `/usr/share/wayland-sessions/niri.desktop`?
   - Script writes it if missing — but if COPR ships it, the script will skip and use theirs (check for conflicts)
 - Default config.kdl location in the package?
+
+## Noctalia Polkit Plugin
+
+- Does the polkit-agent plugin require any additional config or env vars to activate within Noctalia?
+- Confirm plugin is auto-loaded from `~/.config/noctalia/plugins/` on Noctalia start
 
 ## honor-xdg-activation-with-invalid-serial
 
