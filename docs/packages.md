@@ -6,14 +6,14 @@
 sudo dnf5 group install -y cinnamon-desktop
 ```
 
-Installed first. Provides the display manager, PipeWire stack, polkit agent, and core GTK environment. Niri/Noctalia layer on top — Cinnamon session remains available as a fallback.
+Installed first. Provides the display manager, PipeWire stack, polkit agent (for Cinnamon session), and core GTK environment. Niri/Noctalia layer on top — Cinnamon session remains available as a fallback.
 
 **Provided by this group (not installed separately):**
 - `lightdm` — display manager / greeter
 - `pipewire` + `pipewire-pulse` + `wireplumber` — audio and screen share
 - `gnome-keyring` — secret storage
 - `gnome-menus` — `applications.menu` for KDE app discovery
-- `mate-polkit` — polkit auth agent; provides `/usr/libexec/polkit-gnome-authentication-agent-1` (replaces removed `polkit-gnome` on F41+)
+- `mate-polkit` — polkit auth agent for the Cinnamon session; not used by the niri session (Noctalia polkit plugin handles polkit there)
 
 ## Repos
 
