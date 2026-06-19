@@ -247,6 +247,9 @@ install_packages() {
         gnome-keyring-pam
         gnome-menus
 
+        # XDG user directories (Documents, Downloads, Pictures, etc.)
+        xdg-user-dirs
+
         # Terminal
         alacritty
 
@@ -262,6 +265,9 @@ install_packages() {
 
     sudo dnf install -y --exclude=power-profiles-daemon --skip-broken "${PACKAGES[@]}"
     success "Packages installed."
+
+    xdg-user-dirs-update
+    success "XDG user directories created."
 }
 
 # ─────────────────────────────────────────────
