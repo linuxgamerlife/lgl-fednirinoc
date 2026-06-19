@@ -14,11 +14,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
-## [0.3.1] - 2026-06-19
+## [0.4.0] - 2026-06-19
 
 ### Added
+- Noctalia version prompt — user can choose **v4 Stable** (`noctalia-shell`, QuickShell-based) or **v5 Beta** (`noctalia-git`, standalone binary). Spawn command and polkit behaviour differ between versions.
 - `alacritty` added to core package install — provides a terminal on first login without which no post-install commands can be run
 - `gnome-keyring-pam` added to core package install — PAM module that auto-unlocks the keyring on lightdm login; without it apps using libsecret prompt for the keyring password separately
+
+### Changed
+- Noctalia v5 Beta skips the polkit plugin phase — polkit is built into the `noctalia-git` binary (`libpam` + `libpolkit-agent` linked directly)
+- Noctalia spawn command is now version-aware: `qs -c noctalia-shell` for v4, `noctalia` for v5
 
 ---
 
@@ -116,7 +121,7 @@ Initial release. Research-based bash script, partially tested in VM.
 ### Not included (Noctalia handles)
 - Wallpaper, notifications, lock screen, night light, status bar, app launcher
 
-[0.3.1]: https://github.com/linuxgamerlife/lgl-fednirinoc/compare/v0.3.0...v0.3.1
+[0.4.0]: https://github.com/linuxgamerlife/lgl-fednirinoc/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/linuxgamerlife/lgl-fednirinoc/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/linuxgamerlife/lgl-fednirinoc/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/linuxgamerlife/lgl-fednirinoc/compare/v0.0.2...v0.1.0

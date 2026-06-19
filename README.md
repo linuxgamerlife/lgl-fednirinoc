@@ -40,18 +40,19 @@ chmod +x install.sh
 ## What it does
 
 1. Prompts for DNF settings (`installonly_limit`, `max_parallel_downloads`) and updates `/etc/dnf/dnf.conf`
-2. Prompts whether to install Cinnamon Desktop group — skip if you already have a DE installed
-3. Installs and enables lightdm + lightdm-gtk-greeter (always runs, regardless of Cinnamon choice)
-4. Enables repos (avengemedia/danklinux COPR + terra)
-5. Installs niri, Noctalia, and required deps
-6. Ensures `/usr/share/wayland-sessions/niri.desktop` exists so lightdm offers the Niri session
-7. Appends Noctalia startup config to `~/.config/niri/config.kdl`
-8. Writes xdg-portal config
-9. Sets `QT_QPA_PLATFORMTHEME=qt6ct` in `/etc/environment` (system-wide, covers polkit dialogs)
-10. Registers a one-shot autostart to apply dark mode GTK theme on first login
-11. Installs Noctalia polkit agent plugin to `~/.config/noctalia/plugins/polkit-agent`
-12. Optionally installs LGL System Loadout and/or LGL SCX Scheduler Manager
-13. Prints post-install instructions and prompts for reboot
+2. Prompts for Noctalia version — **v4 Stable** (`noctalia-shell`) or **v5 Beta** (`noctalia-git`)
+3. Prompts whether to install Cinnamon Desktop group — skip if you already have a DE installed
+4. Installs and enables lightdm + lightdm-gtk-greeter (always runs, regardless of Cinnamon choice)
+5. Enables repos (avengemedia/danklinux COPR + terra)
+6. Installs niri, Noctalia, alacritty, and required deps
+7. Ensures `/usr/share/wayland-sessions/niri.desktop` exists so lightdm offers the Niri session
+8. Appends Noctalia startup config to `~/.config/niri/config.kdl` (spawn command varies by version)
+9. Writes xdg-portal config
+10. Sets `QT_QPA_PLATFORMTHEME=qt6ct` in `/etc/environment` (system-wide, covers polkit dialogs)
+11. Registers a one-shot autostart to apply dark mode GTK theme on first login
+12. Installs Noctalia polkit agent plugin to `~/.config/noctalia/plugins/polkit-agent` (v4 only — v5 has polkit built in)
+13. Optionally installs LGL System Loadout and/or LGL SCX Scheduler Manager
+14. Prints post-install instructions and prompts for reboot
 
 ## What Noctalia handles
 
