@@ -10,6 +10,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Planned
 - Live hardware testing
+- GTK3 graphical installer app (future)
+
+---
+
+## [0.3.1] - 2026-06-19
+
+### Added
+- `alacritty` added to core package install — provides a terminal on first login without which no post-install commands can be run
+- `gnome-keyring-pam` added to core package install — PAM module that auto-unlocks the keyring on lightdm login; without it apps using libsecret prompt for the keyring password separately
 
 ---
 
@@ -107,6 +116,7 @@ Initial release. Research-based bash script, partially tested in VM.
 ### Not included (Noctalia handles)
 - Wallpaper, notifications, lock screen, night light, status bar, app launcher
 
+[0.3.1]: https://github.com/linuxgamerlife/lgl-fednirinoc/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/linuxgamerlife/lgl-fednirinoc/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/linuxgamerlife/lgl-fednirinoc/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/linuxgamerlife/lgl-fednirinoc/compare/v0.0.2...v0.1.0

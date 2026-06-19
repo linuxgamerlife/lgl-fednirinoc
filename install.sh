@@ -1,5 +1,5 @@
 #!/bin/bash
-# fednirinoc v0.3.0
+# fednirinoc v0.3.1
 # Post-install script: Fedora minimal TTY -> Cinnamon + niri + Noctalia
 # Installs Cinnamon Desktop group first (provides DM, PipeWire, polkit, GTK env),
 # then layers niri + Noctalia on top as a selectable session in lightdm.
@@ -217,7 +217,11 @@ install_packages() {
 
         # Provided by Cinnamon group if installed, explicitly included for non-Cinnamon installs
         gnome-keyring
+        gnome-keyring-pam
         gnome-menus
+
+        # Terminal
+        alacritty
 
         # Optional but integrated by Noctalia
         cliphist
@@ -303,7 +307,7 @@ configure_niri() {
     cat >> "${NIRI_CONFIG}" << 'EOF'
 
 // ---------------------------------------------
-// fednirinoc -- appended by install.sh v0.3.0
+// fednirinoc -- appended by install.sh v0.3.1
 // ---------------------------------------------
 
 // Updates the D-Bus and systemd user environment
@@ -531,7 +535,7 @@ offer_lgl_tools() {
 display_banner() {
     echo ""
     echo "================================================================"
-    echo "  fednirinoc v0.3.0 -- Install Complete"
+    echo "  fednirinoc v0.3.1 -- Install Complete"
     echo "================================================================"
     echo ""
     echo "  TO START:"
@@ -577,7 +581,7 @@ display_banner() {
 
 main() {
     echo ""
-    echo "  fednirinoc v0.3.0 -- Fedora minimal -> Cinnamon + niri + Noctalia"
+    echo "  fednirinoc v0.3.1 -- Fedora minimal -> Cinnamon + niri + Noctalia"
     echo "  ------------------------------------------------------------------"
     echo ""
 
