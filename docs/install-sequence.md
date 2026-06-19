@@ -2,6 +2,15 @@
 
 Assumes: Fedora minimal install, boots to TTY, internet connected, logged in as regular user with sudo.
 
+## Pre-flight Prompts
+
+Before any install begins the script asks:
+
+1. **Noctalia version** — v4 Stable (`noctalia-shell`, QuickShell-based) or v5 Beta (`noctalia-git`, standalone binary). Defaults to v4.
+2. **Cinnamon Desktop** — install as base layer or skip if a DE is already present.
+
+---
+
 ## Phase 0: DNF Configuration
 
 Prompts for two DNF settings before anything is installed. Press Enter to keep defaults.
@@ -62,7 +71,7 @@ sudo dnf install -y --nogpgcheck \
 ```bash
 sudo dnf install -y --exclude=power-profiles-daemon --skip-broken \
   niri \
-  noctalia-shell \
+  <noctalia-shell | noctalia-git>   # v4 stable or v5 beta — chosen at prompt \
   brightnessctl \
   ImageMagick \
   python3 \
@@ -72,13 +81,21 @@ sudo dnf install -y --exclude=power-profiles-daemon --skip-broken \
   xdg-desktop-portal-gnome \
   qt6ct \
   qt5ct \
+  gnome-keyring \
+  gnome-keyring-pam \
+  gnome-menus \
+  alacritty \
+  xdg-user-dirs \
   cliphist \
-  adw-gtk3-theme
+  adw-gtk3-theme   # only if available in repos
 ```
+
+After the dnf install, `xdg-user-dirs-update` is run to create standard user directories immediately.
 
 > `power-profiles-daemon` excluded — conflicts with `tuned-ppd` on Fedora minimal.
 > `xwayland-satellite` omitted — built into niri as of 25.08.
 > `gnome-keyring` and `gnome-menus` explicitly installed — ensures they are present when Cinnamon is skipped.
+> `gnome-keyring-pam` — PAM module for auto-unlock of the keyring on lightdm login.
 > `mate-polkit` omitted — provided by Cinnamon group; not used by the niri session.
 
 ## Phase 4: Niri Session File
@@ -115,8 +132,10 @@ Appended block:
 // Updates the D-Bus and systemd user environment
 spawn-at-startup "dbus-update-activation-environment" "--systemd" "--all"
 
-// Noctalia shell
+// Noctalia shell — v4 stable:
 spawn-at-startup "qs" "-c" "noctalia-shell"
+// Noctalia shell — v5 beta:
+// spawn-at-startup "noctalia"
 
 // Uncomment if apps fail to focus when launched via Noctalia
 // debug {
@@ -164,7 +183,9 @@ echo 'QT_QPA_PLATFORMTHEME=qt6ct' | sudo tee -a /etc/environment
 
 Write `~/.config/autostart/fednirinoc-gtk-theme.desktop` — fires once on first login, sets dark mode via gsettings, then deletes itself.
 
-## Phase 9: Noctalia Polkit Agent
+## Phase 9: Noctalia Polkit Agent (v4 only)
+
+**Skipped for v5 Beta** — polkit is built into the `noctalia-git` binary.
 
 Sparse-clone `polkit-agent` from [noctalia-dev/noctalia-plugins](https://github.com/noctalia-dev/noctalia-plugins) into `~/.config/noctalia/plugins/polkit-agent`. Idempotent — skipped if directory already exists.
 

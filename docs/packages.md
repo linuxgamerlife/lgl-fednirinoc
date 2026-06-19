@@ -53,7 +53,7 @@ Start niri manually from TTY with `niri-session`.
 ```bash
 sudo dnf install -y --exclude=power-profiles-daemon --skip-broken \
   niri \
-  noctalia-shell \
+  noctalia-shell      # or noctalia-git for v5 beta \
   brightnessctl \
   ImageMagick \
   python3 \
@@ -63,13 +63,18 @@ sudo dnf install -y --exclude=power-profiles-daemon --skip-broken \
   xdg-desktop-portal-gnome \
   qt6ct \
   qt5ct \
+  gnome-keyring \
+  gnome-keyring-pam \
+  gnome-menus \
   alacritty \
   xdg-user-dirs \
   cliphist
   # adw-gtk3-theme  # added automatically if available in repos
 ```
 
-## Noctalia Polkit Plugin
+## Noctalia Polkit Plugin (v4 only)
+
+Not installed when v5 Beta is selected — polkit is built into `noctalia-git`.
 
 Installed via sparse-checkout (not a dnf package):
 
@@ -87,11 +92,13 @@ cp -r /tmp/noctalia-plugins/polkit-agent ~/.config/noctalia/plugins/polkit-agent
 |---|---|
 | `lightdm-gtk-greeter` | GTK login screen for lightdm — not always pulled in by the Cinnamon group |
 | `niri` | Wayland compositor — from avengemedia/danklinux COPR |
-| `noctalia-shell` | Full desktop shell — bar, launcher, notifications, wallpaper, lock screen |
+| `noctalia-shell` | Full desktop shell v4 (stable) — QuickShell-based; spawned via `qs -c noctalia-shell` |
+| `noctalia-git` | Full desktop shell v5 (beta) — standalone binary; spawned via `noctalia`; polkit built in |
 | `brightnessctl` | Screen brightness — Noctalia dep |
 | `ImageMagick` | Image processing — Noctalia dep |
 | `python3` | Noctalia dep |
-| `git` | Noctalia dep; also used to install Noctalia polkit plugin |
+| `git` | Noctalia dep; also used to install Noctalia polkit plugin (v4 only) |
+| `gnome-keyring-pam` | PAM module — auto-unlocks keyring on lightdm login; without it apps using libsecret prompt separately |
 | `xdg-desktop-portal-gnome` | Screencasting support |
 | `xdg-desktop-portal-gtk` | File picker |
 | `alacritty` | Terminal emulator — only terminal installed; required to run any commands after first login |

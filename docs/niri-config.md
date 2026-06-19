@@ -102,7 +102,7 @@ After first login, run `qt6ct` to apply the Noctalia color scheme: **Settings �
 
 Qt5 apps use `qt5ct` — both are installed by the script. Run `qt5ct` to configure Qt5 theming separately.
 
-Noctalia (Quickshell/QML) is unaffected — styles itself independently.
+Noctalia v4 (QuickShell/QML) styles itself independently. Noctalia v5 also styles itself independently.
 
 ## Dark Mode
 
@@ -128,14 +128,21 @@ Both gsettings commands require a running dbus session. The install script regis
 
 Remove default Waybar entry if present. Noctalia handles: bar, notifications, wallpaper, lock screen, night light — do not spawn these separately.
 
-**Noctalia** — use this exact command (not just `noctalia-shell`):
+**Noctalia v4 Stable** — use this exact command (not just `noctalia-shell`):
 ```kdl
 spawn-at-startup "qs" "-c" "noctalia-shell"
 ```
 
+**Noctalia v5 Beta:**
+```kdl
+spawn-at-startup "noctalia"
+```
+
 **Do NOT** also enable `noctalia.service` via systemd if using spawn-at-startup — two instances will launch. Pick one method. spawn-at-startup is simpler; systemd is more robust. Recommended: spawn-at-startup for now.
 
-**polkit** — handled by the Noctalia polkit plugin installed to `~/.config/noctalia/plugins/polkit-agent`. No spawn-at-startup entry needed — Noctalia manages it.
+**polkit (v4)** — handled by the Noctalia polkit plugin installed to `~/.config/noctalia/plugins/polkit-agent`. No spawn-at-startup entry needed — Noctalia manages it.
+
+**polkit (v5)** — built into the `noctalia-git` binary. No plugin or spawn-at-startup needed.
 
 ## Portal Config
 
