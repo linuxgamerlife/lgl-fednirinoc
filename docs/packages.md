@@ -63,6 +63,8 @@ sudo dnf install -y --exclude=power-profiles-daemon --skip-broken \
   xdg-desktop-portal-gnome \
   qt6ct \
   qt5ct \
+  alacritty \
+  xdg-user-dirs \
   cliphist
   # adw-gtk3-theme  # added automatically if available in repos
 ```
@@ -92,6 +94,8 @@ cp -r /tmp/noctalia-plugins/polkit-agent ~/.config/noctalia/plugins/polkit-agent
 | `git` | Noctalia dep; also used to install Noctalia polkit plugin |
 | `xdg-desktop-portal-gnome` | Screencasting support |
 | `xdg-desktop-portal-gtk` | File picker |
+| `alacritty` | Terminal emulator — only terminal installed; required to run any commands after first login |
+| `xdg-user-dirs` | Creates standard user directories (Documents, Downloads, Pictures, etc.) — `xdg-user-dirs-update` is run immediately after install |
 | `cliphist` | Clipboard history — Noctalia integrates directly |
 | `adw-gtk3-theme` | GTK theme for GTK apps running under niri |
 | `qt6ct` | Qt6 theme config tool (`adwaita-qt`/`adwaita-qt6` dropped F39+) |
