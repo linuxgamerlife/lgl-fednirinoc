@@ -109,7 +109,7 @@ This is what makes lightdm offer Niri as a selectable session.
 Appended block:
 ```kdl
 // ---------------------------------------------
-// fednirinoc -- appended by install.sh v0.3.0
+// fednirinoc -- appended by install.sh v0.4.0
 // ---------------------------------------------
 
 // Updates the D-Bus and systemd user environment
