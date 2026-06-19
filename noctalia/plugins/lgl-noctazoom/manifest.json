@@ -1,0 +1,29 @@
+{
+  "id": "lgl-noctazoom",
+  "name": "NoctaZoom",
+  "version": "1.0.0",
+  "minNoctaliaVersion": "3.6.0",
+  "author": "lgl",
+  "license": "MIT",
+  "description": "Toggle hyprmag from Noctalia with IPC and plugin settings.",
+  "entryPoints": {
+    "main": "Main.qml",
+    "settings": "Settings.qml"
+  },
+  "dependencies": {
+    "plugins": []
+  },
+  "metadata": {
+    "defaultSettings": {
+      "command": "hyprmag",
+      "shape": "rounded-rect",
+      "radius": 200,
+      "width": 500,
+      "height": 200,
+      "scale": 4,
+      "renderInactive": false,
+      "grabKeyboard": false,
+      "extraArgs": ""
+    }
+  }
+}

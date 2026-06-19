@@ -1,0 +1,8 @@
+{
+  "updateIntervalMinutes": 30,
+  "updateTerminalCommand": "konsole -e",
+  "currentIconName": "arrow-bar-down",
+  "hideOnZero": true,
+  "customCmdGetNumUpdates": "",
+  "customCmdDoSystemUpdate": "sudo dnf update --refresh"
+}

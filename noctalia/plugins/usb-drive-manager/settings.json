@@ -1,0 +1,9 @@
+{
+  "autoMount": false,
+  "fileBrowser": "dolphin",
+  "terminalCommand": "kitty",
+  "showNotifications": true,
+  "hideWhenEmpty": true,
+  "showBadge": true,
+  "iconColor": "primary"
+}
