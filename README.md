@@ -44,9 +44,9 @@ chmod +x install.sh
 1. Prompts for DNF settings (`installonly_limit`, `max_parallel_downloads`) and updates `/etc/dnf/dnf.conf`
 2. Prompts whether to install Cinnamon Desktop group — skip if you already have a DE installed
 3. Installs and enables lightdm + lightdm-gtk-greeter (always runs, regardless of Cinnamon choice)
-4. Enables repos (avengemedia/danklinux COPR + official Noctalia terra repo)
+4. Enables repos (avengemedia/danklinux COPR + lionheartp/Hyprland COPR)
 5. Installs niri, alacritty, and required deps
-6. Installs or reinstalls Noctalia v5 beta (`noctalia-git`) from terra with COPR repos disabled for that transaction
+6. Installs or reinstalls Noctalia v5 beta (`noctalia-git`) from the lionheartp/Hyprland COPR
 7. Ensures `/usr/share/wayland-sessions/niri.desktop` exists so lightdm offers the Niri session
 8. Appends Noctalia startup config to `~/.config/niri/config.kdl`
 9. Writes xdg-portal config

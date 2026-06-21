@@ -35,8 +35,8 @@ show_noctalia_notice() {
     echo "  ----------------------------------------------------------------"
     echo "          Noctalia"
     echo "  ----------------------------------------------------------------"
-    echo "  Noctalia v5 (noctalia-git) will be installed from the official"
-    echo "  terra repo. It is beta software."
+    echo "  Noctalia v5 (noctalia-git) will be installed from the"
+    echo "  lionheartp/Hyprland COPR. It is beta software."
     echo "  ----------------------------------------------------------------"
 }
 
@@ -185,14 +185,12 @@ setup_repos() {
         info "COPR avengemedia/danklinux already enabled."
     fi
 
-    # Terra (official Noctalia repo)
-    if ! rpm -q terra-release &>/dev/null; then
-        sudo dnf install -y --nogpgcheck \
-            --repofrompath "terra,https://repos.fyralabs.com/terra\$releasever" \
-            terra-release
-        success "Installed terra-release"
+    # Noctalia COPR
+    if ! sudo dnf copr list --enabled 2>/dev/null | grep -q "lionheartp/Hyprland"; then
+        sudo dnf copr enable -y lionheartp/Hyprland
+        success "Enabled COPR: lionheartp/Hyprland"
     else
-        info "terra-release already installed."
+        info "COPR lionheartp/Hyprland already enabled."
     fi
 
     sudo dnf makecache -q
@@ -246,15 +244,20 @@ install_packages() {
         PACKAGES+=(adw-gtk3-theme)
     fi
 
-    sudo dnf install -y --exclude=power-profiles-daemon --skip-broken "${PACKAGES[@]}"
+    sudo dnf install -y \
+        --exclude=power-profiles-daemon \
+        --skip-broken \
+        --disablerepo="terra*" \
+        "${PACKAGES[@]}"
     success "Packages installed."
 
-    info "Installing Noctalia v5 beta from official terra repo..."
+    info "Installing Noctalia v5 beta from lionheartp/Hyprland COPR..."
     NOCTALIA_REPO_ARGS=(
         --exclude=power-profiles-daemon
         --skip-broken
         --disablerepo="copr:*"
-        --enablerepo="terra*"
+        --disablerepo="terra*"
+        --enablerepo="copr:copr.fedorainfracloud.org:lionheartp:Hyprland"
     )
 
     if rpm -q "${NOCTALIA_PACKAGE}" &>/dev/null; then
@@ -262,7 +265,7 @@ install_packages() {
     else
         sudo dnf install -y "${NOCTALIA_REPO_ARGS[@]}" "${NOCTALIA_PACKAGE}"
     fi
-    success "Noctalia installed from terra."
+    success "Noctalia installed from lionheartp/Hyprland."
 
     xdg-user-dirs-update
     success "XDG user directories created."

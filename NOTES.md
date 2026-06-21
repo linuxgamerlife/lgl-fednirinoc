@@ -12,9 +12,9 @@ Single bash script. Phases:
 3. DNF configuration
 4. Optional Cinnamon Desktop group install (provides DM, PipeWire, polkit, GTK env)
 5. Display manager install/enable (lightdm)
-6. Repos (avengemedia/danklinux COPR + official Noctalia terra repo)
+6. Repos (avengemedia/danklinux COPR + lionheartp/Hyprland COPR)
 7. Core packages
-8. Noctalia v5 beta via `noctalia-git` from terra with COPR repos disabled
+8. Noctalia v5 beta via `noctalia-git` from lionheartp/Hyprland
 9. Niri session file (write /usr/share/wayland-sessions/niri.desktop if missing)
 10. Niri config (append to config.kdl, do not overwrite)
 11. Portal config
@@ -41,7 +41,7 @@ Reboot → log in at DM → select **Niri** session from session picker (gear/co
 - KDL parse errors silently prevent all spawns — always validate after editing
 
 # Noctalia
-- Install v5 beta (`noctalia-git`) via official terra repo with COPR repos disabled for that transaction
+- Install v5 beta (`noctalia-git`) via lionheartp/Hyprland with all other COPRs and terra disabled for that transaction
 - Spawn: `noctalia` via spawn-at-startup
 - Handles: bar, notifications, wallpaper, lock screen, night light, launcher
 - External deps: brightnessctl, ImageMagick, python3, git, cliphist
