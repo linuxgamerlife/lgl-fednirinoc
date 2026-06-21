@@ -1,5 +1,5 @@
 #!/bin/bash
-# fednirinoc v0.4.0
+# fednirinoc v0.5.0
 # Post-install script: Fedora minimal TTY -> Cinnamon + niri + Noctalia
 # Installs Cinnamon Desktop group first (provides DM, PipeWire, polkit, GTK env),
 # then layers niri + Noctalia on top as a selectable session in lightdm.
@@ -13,8 +13,7 @@ NIRI_CONFIG_DIR="${SCRIPT_HOME}/.config/niri"
 NIRI_CONFIG="${NIRI_CONFIG_DIR}/config.kdl"
 ADW_AVAILABLE=false
 INSTALL_CINNAMON=true
-NOCTALIA_VERSION="stable"
-NOCTALIA_PACKAGE="noctalia-shell"
+NOCTALIA_PACKAGE="noctalia-git"
 
 # ─────────────────────────────────────────────
 # Helpers
@@ -32,31 +31,6 @@ require_sudo() {
 }
 
 # ─────────────────────────────────────────────
-# Noctalia version prompt
-# ─────────────────────────────────────────────
-
-ask_noctalia_version() {
-    echo ""
-    echo "  ----------------------------------------------------------------"
-    echo "          Noctalia Version"
-    echo "  ----------------------------------------------------------------"
-    echo "  v4 Stable  — noctalia-shell  — QuickShell-based, polkit plugin"
-    echo "  v5 Beta    — noctalia-git    — standalone binary, polkit built in"
-    echo "  ----------------------------------------------------------------"
-    echo ""
-    read -rp "  Install Noctalia v5 Beta? [y/N] " yn_noctalia
-    if [[ "${yn_noctalia,,}" == "y" ]]; then
-        NOCTALIA_VERSION="beta"
-        NOCTALIA_PACKAGE="noctalia-git"
-        info "Noctalia v5 Beta selected."
-    else
-        NOCTALIA_VERSION="stable"
-        NOCTALIA_PACKAGE="noctalia-shell"
-        info "Noctalia v4 Stable selected."
-    fi
-}
-
-# ─────────────────────────────────────────────
 # Cinnamon prompt
 # ─────────────────────────────────────────────
 
@@ -65,6 +39,8 @@ ask_cinnamon() {
     echo "  ----------------------------------------------------------------"
     echo "          Cinnamon Desktop"
     echo "  ----------------------------------------------------------------"
+    echo "  Noctalia v5 (noctalia-git) will be installed. It is beta software."
+    echo ""
     echo "  fednirinoc uses Cinnamon as its base desktop environment."
     echo "  It provides: lightdm, PipeWire, polkit, GTK env, and core deps."
     echo ""
@@ -201,7 +177,7 @@ setup_repos() {
         info "COPR avengemedia/danklinux already enabled."
     fi
 
-    # Terra (Noctalia)
+    # Terra (official Noctalia repo)
     if ! rpm -q terra-release &>/dev/null; then
         sudo dnf install -y --nogpgcheck \
             --repofrompath "terra,https://repos.fyralabs.com/terra\$releasever" \
@@ -226,7 +202,7 @@ install_packages() {
         # Core compositor
         niri
 
-        # Noctalia shell + runtime deps
+        # Noctalia v5 beta shell + runtime deps
         "${NOCTALIA_PACKAGE}"
         brightnessctl
         ImageMagick
@@ -340,7 +316,7 @@ configure_niri() {
     cat >> "${NIRI_CONFIG}" << 'EOF'
 
 // ---------------------------------------------
-// fednirinoc -- appended by install.sh v0.4.0
+// fednirinoc -- appended by install.sh v0.5.0
 // ---------------------------------------------
 
 // Updates the D-Bus and systemd user environment
@@ -348,19 +324,11 @@ spawn-at-startup "dbus-update-activation-environment" "--systemd" "--all"
 
 EOF
 
-    if [[ "${NOCTALIA_VERSION}" == "stable" ]]; then
-        cat >> "${NIRI_CONFIG}" << 'EOF'
-// Noctalia shell (v4 stable)
-spawn-at-startup "qs" "-c" "noctalia-shell"
-
-EOF
-    else
-        cat >> "${NIRI_CONFIG}" << 'EOF'
-// Noctalia shell (v5 beta)
+    cat >> "${NIRI_CONFIG}" << 'EOF'
+// Noctalia shell (v5)
 spawn-at-startup "noctalia"
 
 EOF
-    fi
 
     cat >> "${NIRI_CONFIG}" << 'EOF'
 // Uncomment if apps fail to focus when launched via Noctalia
@@ -464,68 +432,7 @@ EOF
 }
 
 # ─────────────────────────────────────────────
-# Phase 9: Noctalia polkit agent
-# ─────────────────────────────────────────────
-
-install_noctalia_polkit() {
-    if [[ "${NOCTALIA_VERSION}" == "beta" ]]; then
-        info "Noctalia v5 has polkit built in — skipping polkit plugin install."
-        return
-    fi
-
-    info "Installing Noctalia polkit agent..."
-
-    NOCTALIA_PLUGINS_DIR="${SCRIPT_HOME}/.config/noctalia/plugins"
-    POLKIT_DEST="${NOCTALIA_PLUGINS_DIR}/polkit-agent"
-
-    if [[ -d "${POLKIT_DEST}" ]]; then
-        info "Noctalia polkit-agent already installed — skipping."
-        return
-    fi
-
-    mkdir -p "${NOCTALIA_PLUGINS_DIR}"
-
-    TMP_DIR=$(mktemp -d)
-    git clone --no-checkout --depth=1 --filter=blob:none \
-        https://github.com/noctalia-dev/noctalia-plugins.git "${TMP_DIR}"
-    git -C "${TMP_DIR}" sparse-checkout set polkit-agent
-    git -C "${TMP_DIR}" checkout
-
-    cp -r "${TMP_DIR}/polkit-agent" "${POLKIT_DEST}"
-    rm -rf "${TMP_DIR}"
-
-    success "Noctalia polkit-agent installed to ${POLKIT_DEST}"
-
-    # Enable the plugin in plugins.json — Noctalia defaults it to disabled.
-    # If Noctalia overwrites this on first launch the user will need to enable manually.
-    PLUGINS_JSON="${SCRIPT_HOME}/.config/noctalia/plugins.json"
-    if [[ ! -f "${PLUGINS_JSON}" ]]; then
-        cat > "${PLUGINS_JSON}" << 'EOF'
-{
-    "sources": [
-        {
-            "enabled": true,
-            "name": "Noctalia Plugins",
-            "url": "https://github.com/noctalia-dev/noctalia-plugins"
-        }
-    ],
-    "states": {
-        "polkit-agent": {
-            "enabled": true,
-            "sourceUrl": "https://github.com/noctalia-dev/noctalia-plugins"
-        }
-    },
-    "version": 2
-}
-EOF
-        success "Noctalia plugins.json written with polkit-agent enabled."
-    else
-        info "plugins.json already exists — skipping. Enable polkit-agent manually if needed."
-    fi
-}
-
-# ─────────────────────────────────────────────
-# Phase 10: Optional LGL tools
+# Phase 9: Optional LGL tools
 # ─────────────────────────────────────────────
 
 offer_lgl_tools() {
@@ -581,13 +488,13 @@ offer_lgl_tools() {
 }
 
 # ─────────────────────────────────────────────
-# Phase 11: Post-install banner + reboot prompt
+# Phase 10: Post-install banner + reboot prompt
 # ─────────────────────────────────────────────
 
 display_banner() {
     echo ""
     echo "================================================================"
-    echo "  fednirinoc v0.4.0 -- Install Complete"
+    echo "  fednirinoc v0.5.0 -- Install Complete"
     echo "================================================================"
     echo ""
     echo "  TO START:"
@@ -633,11 +540,10 @@ display_banner() {
 
 main() {
     echo ""
-    echo "  fednirinoc v0.4.0 -- Fedora minimal -> Cinnamon + niri + Noctalia"
+    echo "  fednirinoc v0.5.0 -- Fedora minimal -> Cinnamon + niri + Noctalia"
     echo "  ------------------------------------------------------------------"
     echo ""
 
-    ask_noctalia_version
     ask_cinnamon
     preflight
     configure_dnf
@@ -652,7 +558,6 @@ main() {
     configure_portals
     configure_system_env
     configure_gtk_theme
-    install_noctalia_polkit
     offer_lgl_tools
     display_banner
 }

@@ -7,17 +7,20 @@ User logs in at TTY after Fedora minimal install, runs the script, then reboots 
 
 ## Script: install.sh
 Single bash script. Phases:
-1. Preflight checks (sudo, internet, Fedora)
-2. Cinnamon Desktop group install (provides DM, PipeWire, polkit, GTK env)
-3. Repos (avengemedia/danklinux COPR + terra)
-4. Packages (niri-specific — Cinnamon-provided deps excluded)
-5. Niri session file (write /usr/share/wayland-sessions/niri.desktop if missing)
-6. Niri config (append to config.kdl, do not overwrite)
-7. Portal config
-8. System env (QT_QPA_PLATFORMTHEME)
-9. GTK theme autostart
-10. LGL optional tools
-11. Banner with post-install instructions
+1. Cinnamon Desktop prompt
+2. Preflight checks (sudo, internet, Fedora)
+3. DNF configuration
+4. Optional Cinnamon Desktop group install (provides DM, PipeWire, polkit, GTK env)
+5. Display manager install/enable (lightdm)
+6. Repos (avengemedia/danklinux COPR + official Noctalia terra repo)
+7. Packages (niri + Noctalia v5 beta via `noctalia-git`)
+8. Niri session file (write /usr/share/wayland-sessions/niri.desktop if missing)
+9. Niri config (append to config.kdl, do not overwrite)
+10. Portal config
+11. System env (QT_QPA_PLATFORMTHEME)
+12. GTK theme autostart
+13. LGL optional tools
+14. Banner with post-install instructions
 
 Cinnamon provides the display manager (lightdm). Niri appears as a selectable session at the DM login screen.
 
@@ -37,13 +40,13 @@ Reboot → log in at DM → select **Niri** session from session picker (gear/co
 - KDL parse errors silently prevent all spawns — always validate after editing
 
 # Noctalia
-- Install via terra repo
-- Spawn: `qs -c noctalia-shell` via spawn-at-startup
+- Install v5 beta (`noctalia-git`) via official terra repo
+- Spawn: `noctalia` via spawn-at-startup
 - Handles: bar, notifications, wallpaper, lock screen, night light, launcher
 - External deps: brightnessctl, ImageMagick, python3, git, cliphist
 
 # Polkit
-- Use Noctalia Polkit to keep in style with the theme. NEEDS TO BE ADDED SEE BELOW
+- Noctalia v5 has polkit built in. No plugin install required.
 
 # Xwayland-satellite no longer needs to be added as it's built into Niri as of 25.08 
 - Needs to be removed frome script  >> xwayland-satellite spawned via spawn-at-startup in config.kdl- Required for X11/game compatibility
@@ -52,12 +55,3 @@ Reboot → log in at DM → select **Niri** session from session picker (gear/co
 - power-profiles-daemon conflicts with tuned-ppd — exclude from dnf install
 - Display output config requires niri running — manual post-install step
 - KDL syntax: scale must be float (1.0 not 1), strings need closing quotes
-
-# To add Noctalia polkit once ins
-
-```git clone --no-checkout --depth=1 --filter=blob:none https://github.com/noctalia-dev/noctalia-plugins.git
-cd noctalia-plugins
-git sparse-checkout set polkit-agent
-git checkout```
-
-destination needs to be placed in ~/.config/noctalia/plugins/ which might need to be created

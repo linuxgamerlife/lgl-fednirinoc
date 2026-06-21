@@ -11,6 +11,8 @@ A post-install bash script that sets up [niri](https://github.com/niri-wm/niri) 
 >
 > **Terminal:** Alacritty is installed. You will need to install any other apps. Additional app decisions have not been made for you.
 >
+> **Noctalia:** This installer uses Noctalia v5 (`noctalia-git`), which is currently beta software.
+>
 > **To start after install:** reboot → log in via the display manager. If you installed Cinnamon, select **Niri** from the session menu (gear/cog icon at the login screen). Otherwise Niri will be the only session and will start automatically.
 >
 > **First boot:** Noctalia may not appear the first time you run Niri. Log back out, select Niri again — it will start correctly.
@@ -40,19 +42,17 @@ chmod +x install.sh
 ## What it does
 
 1. Prompts for DNF settings (`installonly_limit`, `max_parallel_downloads`) and updates `/etc/dnf/dnf.conf`
-2. Prompts for Noctalia version — **v4 Stable** (`noctalia-shell`) or **v5 Beta** (`noctalia-git`)
-3. Prompts whether to install Cinnamon Desktop group — skip if you already have a DE installed
-4. Installs and enables lightdm + lightdm-gtk-greeter (always runs, regardless of Cinnamon choice)
-5. Enables repos (avengemedia/danklinux COPR + terra)
-6. Installs niri, Noctalia, alacritty, and required deps
-7. Ensures `/usr/share/wayland-sessions/niri.desktop` exists so lightdm offers the Niri session
-8. Appends Noctalia startup config to `~/.config/niri/config.kdl` (spawn command varies by version)
-9. Writes xdg-portal config
-10. Sets `QT_QPA_PLATFORMTHEME=qt6ct` in `/etc/environment` (system-wide, covers polkit dialogs)
-11. Registers a one-shot autostart to apply dark mode GTK theme on first login
-12. Installs Noctalia polkit agent plugin to `~/.config/noctalia/plugins/polkit-agent` (v4 only — v5 has polkit built in)
-13. Optionally installs LGL System Loadout and/or LGL SCX Scheduler Manager
-14. Prints post-install instructions and prompts for reboot
+2. Prompts whether to install Cinnamon Desktop group — skip if you already have a DE installed
+3. Installs and enables lightdm + lightdm-gtk-greeter (always runs, regardless of Cinnamon choice)
+4. Enables repos (avengemedia/danklinux COPR + official Noctalia terra repo)
+5. Installs niri, Noctalia v5 beta (`noctalia-git`), alacritty, and required deps
+6. Ensures `/usr/share/wayland-sessions/niri.desktop` exists so lightdm offers the Niri session
+7. Appends Noctalia startup config to `~/.config/niri/config.kdl`
+8. Writes xdg-portal config
+9. Sets `QT_QPA_PLATFORMTHEME=qt6ct` in `/etc/environment` (system-wide, covers polkit dialogs)
+10. Registers a one-shot autostart to apply dark mode GTK theme on first login
+11. Optionally installs LGL System Loadout and/or LGL SCX Scheduler Manager
+12. Prints post-install instructions and prompts for reboot
 
 ## What Noctalia handles
 
@@ -66,7 +66,7 @@ These are not configured by the script — Noctalia manages them internally:
 | Wallpaper | Noctalia built-in |
 | Lock screen | Noctalia built-in |
 | Night light | Noctalia NightLightService |
-| Polkit | Noctalia polkit plugin (`~/.config/noctalia/plugins/polkit-agent`) |
+| Polkit | Noctalia v5 built-in polkit agent |
 
 ## After install
 
@@ -75,7 +75,6 @@ Reboot, then at the login screen select the **Niri** session from the session pi
 On first login:
 - Dark mode GTK theme is applied automatically by a one-shot autostart, then removes itself
 - Run `qt6ct` to configure Qt6 app theming and `qt5ct` for Qt5 apps (apply the Noctalia color scheme)
-- The Noctalia polkit plugin is pre-enabled in `plugins.json` — if polkit dialogs don't appear, open the Noctalia plugin manager and enable it manually
 
 Display config (run inside niri after first launch):
 ```bash
@@ -119,7 +118,6 @@ Then start niri manually from TTY with `niri-session`.
 | Suspend → red screen (niri + Fedora GPU bug) | Avoid suspend |
 | Display output config requires niri running | Manual step post-install (see After install above) |
 | `power-profiles-daemon` conflicts with `tuned-ppd` | Excluded from install — `tuned-ppd` provides the same service |
-| Noctalia polkit plugin not appearing | Enable manually via Noctalia plugin manager |
 
 ## Docs
 

@@ -8,9 +8,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+- Disclaimer that Noctalia v5 (`noctalia-git`) is currently beta software.
+
 ### Planned
 - Live hardware testing
 - GTK3 graphical installer app (future)
+
+---
+
+## [0.5.0] - 2026-06-21
+
+### Changed
+- Noctalia install path now always uses v5 from the official terra repo via `noctalia-git`.
+- Niri startup config now always spawns `noctalia`; the v4 `noctalia-shell` option was removed.
+
+### Removed
+- Noctalia version prompt.
+- v4-only Noctalia polkit plugin install phase.
 
 ---
 
