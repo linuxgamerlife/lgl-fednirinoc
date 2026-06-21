@@ -30,6 +30,16 @@ require_sudo() {
     fi
 }
 
+show_noctalia_notice() {
+    echo ""
+    echo "  ----------------------------------------------------------------"
+    echo "          Noctalia"
+    echo "  ----------------------------------------------------------------"
+    echo "  Noctalia v5 (noctalia-git) will be installed from the official"
+    echo "  terra repo. It is beta software."
+    echo "  ----------------------------------------------------------------"
+}
+
 # ─────────────────────────────────────────────
 # Cinnamon prompt
 # ─────────────────────────────────────────────
@@ -39,8 +49,6 @@ ask_cinnamon() {
     echo "  ----------------------------------------------------------------"
     echo "          Cinnamon Desktop"
     echo "  ----------------------------------------------------------------"
-    echo "  Noctalia v5 (noctalia-git) will be installed. It is beta software."
-    echo ""
     echo "  fednirinoc uses Cinnamon as its base desktop environment."
     echo "  It provides: lightdm, PipeWire, polkit, GTK env, and core deps."
     echo ""
@@ -202,8 +210,7 @@ install_packages() {
         # Core compositor
         niri
 
-        # Noctalia v5 beta shell + runtime deps
-        "${NOCTALIA_PACKAGE}"
+        # Noctalia runtime deps
         brightnessctl
         ImageMagick
         python3
@@ -241,6 +248,21 @@ install_packages() {
 
     sudo dnf install -y --exclude=power-profiles-daemon --skip-broken "${PACKAGES[@]}"
     success "Packages installed."
+
+    info "Installing Noctalia v5 beta from official terra repo..."
+    NOCTALIA_REPO_ARGS=(
+        --exclude=power-profiles-daemon
+        --skip-broken
+        --disablerepo="copr:*"
+        --enablerepo="terra*"
+    )
+
+    if rpm -q "${NOCTALIA_PACKAGE}" &>/dev/null; then
+        sudo dnf reinstall -y "${NOCTALIA_REPO_ARGS[@]}" "${NOCTALIA_PACKAGE}"
+    else
+        sudo dnf install -y "${NOCTALIA_REPO_ARGS[@]}" "${NOCTALIA_PACKAGE}"
+    fi
+    success "Noctalia installed from terra."
 
     xdg-user-dirs-update
     success "XDG user directories created."
@@ -544,6 +566,7 @@ main() {
     echo "  ------------------------------------------------------------------"
     echo ""
 
+    show_noctalia_notice
     ask_cinnamon
     preflight
     configure_dnf

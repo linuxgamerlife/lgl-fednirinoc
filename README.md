@@ -45,14 +45,15 @@ chmod +x install.sh
 2. Prompts whether to install Cinnamon Desktop group — skip if you already have a DE installed
 3. Installs and enables lightdm + lightdm-gtk-greeter (always runs, regardless of Cinnamon choice)
 4. Enables repos (avengemedia/danklinux COPR + official Noctalia terra repo)
-5. Installs niri, Noctalia v5 beta (`noctalia-git`), alacritty, and required deps
-6. Ensures `/usr/share/wayland-sessions/niri.desktop` exists so lightdm offers the Niri session
-7. Appends Noctalia startup config to `~/.config/niri/config.kdl`
-8. Writes xdg-portal config
-9. Sets `QT_QPA_PLATFORMTHEME=qt6ct` in `/etc/environment` (system-wide, covers polkit dialogs)
-10. Registers a one-shot autostart to apply dark mode GTK theme on first login
-11. Optionally installs LGL System Loadout and/or LGL SCX Scheduler Manager
-12. Prints post-install instructions and prompts for reboot
+5. Installs niri, alacritty, and required deps
+6. Installs or reinstalls Noctalia v5 beta (`noctalia-git`) from terra with COPR repos disabled for that transaction
+7. Ensures `/usr/share/wayland-sessions/niri.desktop` exists so lightdm offers the Niri session
+8. Appends Noctalia startup config to `~/.config/niri/config.kdl`
+9. Writes xdg-portal config
+10. Sets `QT_QPA_PLATFORMTHEME=qt6ct` in `/etc/environment` (system-wide, covers polkit dialogs)
+11. Registers a one-shot autostart to apply dark mode GTK theme on first login
+12. Optionally installs LGL System Loadout and/or LGL SCX Scheduler Manager
+13. Prints post-install instructions and prompts for reboot
 
 ## What Noctalia handles
 

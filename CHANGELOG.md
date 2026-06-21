@@ -11,6 +11,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Added
 - Disclaimer that Noctalia v5 (`noctalia-git`) is currently beta software.
 
+### Changed
+- Moved the Noctalia beta disclaimer out of the Cinnamon prompt and into its own installer notice.
+- Noctalia now installs or reinstalls in a separate dnf transaction with COPR repos disabled and terra explicitly enabled, preventing `noctalia-git` from being pulled from the niri COPR.
+
 ### Planned
 - Live hardware testing
 - GTK3 graphical installer app (future)

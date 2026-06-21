@@ -13,14 +13,15 @@ Single bash script. Phases:
 4. Optional Cinnamon Desktop group install (provides DM, PipeWire, polkit, GTK env)
 5. Display manager install/enable (lightdm)
 6. Repos (avengemedia/danklinux COPR + official Noctalia terra repo)
-7. Packages (niri + Noctalia v5 beta via `noctalia-git`)
-8. Niri session file (write /usr/share/wayland-sessions/niri.desktop if missing)
-9. Niri config (append to config.kdl, do not overwrite)
-10. Portal config
-11. System env (QT_QPA_PLATFORMTHEME)
-12. GTK theme autostart
-13. LGL optional tools
-14. Banner with post-install instructions
+7. Core packages
+8. Noctalia v5 beta via `noctalia-git` from terra with COPR repos disabled
+9. Niri session file (write /usr/share/wayland-sessions/niri.desktop if missing)
+10. Niri config (append to config.kdl, do not overwrite)
+11. Portal config
+12. System env (QT_QPA_PLATFORMTHEME)
+13. GTK theme autostart
+14. LGL optional tools
+15. Banner with post-install instructions
 
 Cinnamon provides the display manager (lightdm). Niri appears as a selectable session at the DM login screen.
 
@@ -40,7 +41,7 @@ Reboot → log in at DM → select **Niri** session from session picker (gear/co
 - KDL parse errors silently prevent all spawns — always validate after editing
 
 # Noctalia
-- Install v5 beta (`noctalia-git`) via official terra repo
+- Install v5 beta (`noctalia-git`) via official terra repo with COPR repos disabled for that transaction
 - Spawn: `noctalia` via spawn-at-startup
 - Handles: bar, notifications, wallpaper, lock screen, night light, launcher
 - External deps: brightnessctl, ImageMagick, python3, git, cliphist
