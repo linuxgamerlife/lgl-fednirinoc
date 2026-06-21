@@ -247,7 +247,6 @@ install_packages() {
     sudo dnf install -y \
         --exclude=power-profiles-daemon \
         --skip-broken \
-        --disablerepo="terra*" \
         "${PACKAGES[@]}"
     success "Packages installed."
 
@@ -255,9 +254,6 @@ install_packages() {
     NOCTALIA_REPO_ARGS=(
         --exclude=power-profiles-daemon
         --skip-broken
-        --disablerepo="copr:*"
-        --disablerepo="terra*"
-        --enablerepo="copr:copr.fedorainfracloud.org:lionheartp:Hyprland"
     )
 
     if rpm -q "${NOCTALIA_PACKAGE}" &>/dev/null; then

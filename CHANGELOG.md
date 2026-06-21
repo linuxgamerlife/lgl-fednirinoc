@@ -13,7 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 - Moved the Noctalia beta disclaimer out of the Cinnamon prompt and into its own installer notice.
-- Noctalia now installs or reinstalls from the `lionheartp/Hyprland` COPR in a separate dnf transaction with all other COPRs and terra disabled, preventing `noctalia-git` from being pulled from the niri COPR or terra.
+- Noctalia now installs or reinstalls from the `lionheartp/Hyprland` COPR in a separate dnf transaction.
 
 ### Planned
 - Live hardware testing

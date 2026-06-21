@@ -41,7 +41,7 @@ Reboot → log in at DM → select **Niri** session from session picker (gear/co
 - KDL parse errors silently prevent all spawns — always validate after editing
 
 # Noctalia
-- Install v5 beta (`noctalia-git`) via lionheartp/Hyprland with all other COPRs and terra disabled for that transaction
+- Install v5 beta (`noctalia-git`) via lionheartp/Hyprland
 - Spawn: `noctalia` via spawn-at-startup
 - Handles: bar, notifications, wallpaper, lock screen, night light, launcher
 - External deps: brightnessctl, ImageMagick, python3, git, cliphist
